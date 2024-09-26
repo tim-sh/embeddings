@@ -1,9 +1,9 @@
 const { proj } = require('./fs')
-const { rndStr } = require('./format')
+const { hashed } = require('./format')
 
 const { github: { apiUrl, token, org, repo } } = require(proj('data/.private/config.json'))
 
-async function getComments(issue, fields = ['body', 'user.type', 'user.login', 'author_association', 'labels'], replace = [['user.login', () => rndStr(7)]]) {
+async function getComments(issue, fields = ['body', 'user.type', 'user.login', 'author_association', 'labels'], replace = []) {
   const { number } = issue
   const url = `${apiUrl}/repos/${org}/${repo}/issues/${number}/comments`
   const comments = await fetch(url, {

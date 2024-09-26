@@ -2,6 +2,8 @@
 
 const { proj } = require('../../../util/fs')
 const { getComments } = require('../../../util/github')
+const { writeFileSync } = require('node:fs')
+const { hashed } = require('../../../util/format')
 
 const relevantFields = [
   'number',
@@ -25,7 +27,9 @@ async function main() {
     randomIssues.push(items)
   }
 
-  console.log(JSON.stringify(randomIssues, null, 2))
+  const str = JSON.stringify(randomIssues, null, 2)
+      .replaceAll(/\b[di]\d{6}\b/gi, username => hashed(username))
+  writeFileSync(proj('data/.private/issues/issues.rnd.json'), str)
 
 }
 
