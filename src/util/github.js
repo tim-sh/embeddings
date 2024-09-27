@@ -1,5 +1,4 @@
 const { proj } = require('./fs')
-const { hashed } = require('./format')
 
 const { github: { apiUrl, token, org, repo } } = require(proj('data/.private/config.json'))
 

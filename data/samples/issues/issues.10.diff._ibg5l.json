@@ -1,0 +1,134 @@
+{
+  "issues": [
+    {
+      "number": 10234,
+      "title": "NullPointerException in UserService",
+      "labels": [
+        "backend",
+        "UserService"
+      ],
+      "body": "We are encountering a NullPointerException in the UserService class when trying to fetch user details. The stack trace points to line 45 in UserService.java. This issue seems to occur intermittently, making it hard to reproduce consistently. The user object appears to be null, but only under certain conditions. Additional logging might be needed to pinpoint the exact cause.",
+      "comments": [
+        "Can you provide the exact conditions under which this occurs?",
+        "Have you checked if the user ID being passed is valid?"
+      ]
+    },
+    {
+      "number": 20456,
+      "title": "CSS not loading on mobile devices",
+      "labels": [
+        "frontend",
+        "CSS"
+      ],
+      "body": "The CSS styles are not being applied when the website is accessed from mobile devices. This issue is not present on desktop browsers. We have verified that the media queries are correctly defined. The problem seems to be related to the way the CSS files are being served. Clearing the cache does not resolve the issue.",
+      "comments": [
+        "Is this happening on all mobile browsers or specific ones?",
+        "Can you check if the CSS files are being blocked by any security settings?"
+      ]
+    },
+    {
+      "number": 30567,
+      "title": "Database connection timeout",
+      "labels": [
+        "backend",
+        "database"
+      ],
+      "body": "We are experiencing frequent database connection timeouts. The issue started after the recent update to the database server. The error message is: 'java.sql.SQLTimeoutException: Timeout after 30000ms'. Increasing the timeout value in the configuration file did not help. This is affecting the performance of the entire application.",
+      "comments": [
+        "Have you checked the database server logs for any errors?",
+        "Is the network connection between the application server and the database stable?"
+      ]
+    },
+    {
+      "number": 40678,
+      "title": "Memory leak in ImageProcessor",
+      "labels": [
+        "backend",
+        "ImageProcessor"
+      ],
+      "body": "There appears to be a memory leak in the ImageProcessor module. The application’s memory usage keeps increasing over time, eventually leading to an OutOfMemoryError. The issue is reproducible when processing a large number of images. Profiling the application shows that memory is not being released properly after each image is processed.",
+      "comments": [
+        "Can you provide a sample code snippet that reproduces the issue?",
+        "Have you tried using a different image processing library?"
+      ]
+    },
+    {
+      "number": 50789,
+      "title": "API response time is too slow",
+      "labels": [
+        "backend",
+        "API"
+      ],
+      "body": "The response time for our API endpoints has increased significantly. The average response time is now over 5 seconds, which is unacceptable for our users. We have not made any recent changes to the API code. Profiling the application shows that the delay is occurring during database queries. Optimizing the queries might help resolve this issue.",
+      "comments": [
+        "Can you identify which specific queries are causing the delay?",
+        "Have you considered adding indexes to the database tables?"
+      ]
+    },
+    {
+      "number": 60890,
+      "title": "Button click event not firing",
+      "labels": [
+        "frontend",
+        "JavaScript"
+      ],
+      "body": "The click event for the submit button is not firing in the registration form. The issue is only present in Internet Explorer. The event listener is attached correctly, and the JavaScript code works fine in other browsers. This might be related to compatibility issues with older versions of Internet Explorer.",
+      "comments": [
+        "Can you provide the JavaScript code that attaches the event listener?",
+        "Have you tried using a polyfill for compatibility?"
+      ]
+    },
+    {
+      "number": 70901,
+      "title": "Search functionality not working",
+      "labels": [
+        "frontend",
+        "search"
+      ],
+      "body": "The search functionality on the website is not returning any results. The issue started after the recent deployment. The search query is being sent to the server, but the response is always empty. This might be related to changes in the search indexing process. Rebuilding the search index did not resolve the issue.",
+      "comments": [
+        "Can you check if the search index is being updated correctly?",
+        "Is the search query being constructed properly?"
+      ]
+    },
+    {
+      "number": 81012,
+      "title": "Error 500 on login",
+      "labels": [
+        "backend",
+        "authentication"
+      ],
+      "body": "Users are receiving a 500 Internal Server Error when trying to log in. The server logs show a 'java.lang.IllegalArgumentException: Invalid credentials' error. This issue started after we updated the authentication library. Rolling back to the previous version of the library resolves the issue, but we need to use the latest version for security reasons.",
+      "comments": [
+        "Can you provide the full stack trace from the server logs?",
+        "Have you checked if the user credentials are being validated correctly?"
+      ]
+    },
+    {
+      "number": 91123,
+      "title": "Page not found error on profile page",
+      "labels": [
+        "frontend",
+        "routing"
+      ],
+      "body": "Users are encountering a 'Page not found' error when trying to access their profile page. The issue seems to be related to the routing configuration. The profile page URL is being generated correctly, but the server is returning a 404 error. This might be related to recent changes in the routing logic.",
+      "comments": [
+        "Can you provide the routing configuration for the profile page?",
+        "Have you checked if the profile page component is being loaded correctly?"
+      ]
+    },
+    {
+      "number": 101234,
+      "title": "Email notifications not being sent",
+      "labels": [
+        "backend",
+        "notifications"
+      ],
+      "body": "Email notifications are not being sent to users. The issue started after we switched to a new email service provider. The server logs show a 'javax.mail.MessagingException: Could not connect to SMTP host' error. The SMTP settings have been configured correctly, and the email service provider has confirmed that there are no issues on their end.",
+      "comments": [
+        "Can you provide the SMTP configuration settings?",
+        "Have you checked if the firewall is blocking the SMTP connection?"
+      ]
+    }
+  ]
+}
