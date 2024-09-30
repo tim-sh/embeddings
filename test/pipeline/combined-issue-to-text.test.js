@@ -7,7 +7,7 @@ const { issueToText } = require('../../src/pipeline/issue-to-text')
 const { issueAddCommentTexts } = require('../../src/pipeline/issue-add-comment-texts')
 const { issueTransformLabels } = require('../../src/pipeline/issue-transform-labels')
 
-describe('combined-issue-to-clean-text', () => {
+describe('combined-issue-to-text', () => {
 
   beforeAll(async () => {
     const { default: fetchMock } = await import('fetch-mock')
