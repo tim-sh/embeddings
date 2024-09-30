@@ -194,7 +194,6 @@ Caused by: com.example.FooDataStoreException: Error executing the statement
 at com.example.impl.ExceptionHandler.dataStoreException(ExceptionHandler.java:62)
 at com.example.impl.JDBCClient.executeQuery(JDBCClient.java:211)
 Caused by: com.example.FooDataStoreException: SQL: SELECT NULLS FIRST
-... 40 common frames omitted
 Caused by: com.example.db.jdbc.exceptions.JDBCDriverException:  DBTech JDBC: [260]: invalid column name: T0.MY_VIEW_MY_VIEW_ID: line 1 col 382 (at pos 381)
 at com.example.db.jdbc.exceptions.SQLExceptionSapDB._newInstance(SQLExceptionSapDB.java:209)
 at com.example.db.jdbc.exceptions.SQLExceptionSapDB.newInstance(SQLExceptionSapDB.java:42)`

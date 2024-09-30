@@ -50,7 +50,7 @@ function tryStack(line, prev, next, stackLen, excludeFromMaxLen) {
     return [undefined, stackLen]
   }
 
-  const irrelevant = /^\s*(?:[}^]$|node:internal\/|throw\s)|^\s*at\s+(?:java\.|sun\.|com\.sun\.|jdk\.)|(?:\bat\s+|\()(?:node:)?internal\/|\.{3}.*\bcause\b.*\.{3}/.test(line)
+  const irrelevant = /^\s*(?:[}^]$|node:internal\/|throw\s)|^\s*at\s+(?:java\.|sun\.|com\.sun\.|jdk\.)|(?:\bat\s+|\()(?:node:)?internal\/|\.{3}.*\s(cause.*\.{3}|omitted\b)/.test(line)
   const inStack = () => /^\s*(?:[}^]$|at\s|throw\s|\.{3}.*\bcause\b.*\.{3}|)/.test(line)
   const startsProperties = () => /^\s*at\s.*\s\{$/.test(line)
   const endsStack = () => !inStack() || /^\s*}$/.test(prev)
