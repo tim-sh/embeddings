@@ -1,0 +1,24 @@
+name: PR
+
+on:
+  pull_request:
+    paths:
+      - src/**
+      - test/**
+  workflow_dispatch:
+
+jobs:
+  pr-build:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      - run: npm test
