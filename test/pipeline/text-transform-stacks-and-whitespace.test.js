@@ -11,6 +11,7 @@ describe('text-transform-stacks-and-whitespace', () => {
           at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
           at com.sun.proxy.$Proxy0.foo(Unknown Source)
           at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+          ... 40 common frames omitted
           at baz
       Dolor sit amet.
     `
