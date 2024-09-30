@@ -1,7 +1,8 @@
 const { apiUrl } = require('../mox/moc-konfig')
-const { addNonBotCommentTexts } = require('../../src/pipeline/add-non-bot-comment-texts')
 
-describe('add-non-bot-comment-texts', () => {
+const { issueAddCommentTexts } = require('../../src/pipeline/issue-add-comment-texts')
+
+describe('issue-add-comment-texts', () => {
 
   beforeAll(async () => {
     const { default: fetchMock } = await import('fetch-mock')
@@ -21,7 +22,7 @@ describe('add-non-bot-comment-texts', () => {
     }
     const originalIssue = { ...issue }
 
-    await addNonBotCommentTexts(issue)
+    await issueAddCommentTexts(issue)
 
     expect(issue.comments).toEqual([
       'comment 1',

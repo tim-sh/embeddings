@@ -1,4 +1,4 @@
-function removeCodeDelimiters(text) {
+function textRemoveCodeDelimiters(text) {
   return text
       .replace(/^[ \t]*```\S*\n(.*?)(?:\n[ \t]*)?```/gms, '$1')
       .replace(/[ \t]*```\S*(\n.*?)(?:\n[ \t]*)?```/gms, '$1')
@@ -7,5 +7,5 @@ function removeCodeDelimiters(text) {
 }
 
 module.exports = {
-  removeCodeDelimiters
+  textRemoveCodeDelimiters
 }

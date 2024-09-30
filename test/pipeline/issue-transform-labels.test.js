@@ -1,7 +1,7 @@
 require('../mox/moc-konfig')
-const transform = require('../../src/pipeline/transform-issue')
+const { issueTransformLabels } = require('../../src/pipeline/issue-transform-labels')
 
-describe('transform-issue', () => {
+describe('issue-transform-labels', () => {
   it('should transform labels into strings removing irrelevant entries', async () => {
     const issue = {
       labels: [
@@ -16,7 +16,7 @@ describe('transform-issue', () => {
     }
     const originalIssue = { ...issue }
 
-    transform(issue)
+    issueTransformLabels(issue)
 
     expect(issue.labels).toEqual(['wow foo', 'wow bar', 'wow cds42'])
 
@@ -38,7 +38,7 @@ describe('transform-issue', () => {
     }
     const originalIssue = { ...issue }
 
-    transform(issue)
+    issueTransformLabels(issue)
 
     expect(issue.labels).toEqual(['wow foo', 'wow bar', 'wow cds42'])
 

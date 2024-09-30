@@ -1,6 +1,6 @@
-const { trimPathsPrefixes } = require('src/pipeline/trim-paths-prefixes')
+const { textTransformPaths } = require('../../src/pipeline/text-transform-paths')
 
-describe('trim-path-prefixes', () => {
+describe('text-trim-path-prefixes.test', () => {
   it('should trim Unix paths', async () => {
     const text = `
     /home/user/Documents/file.txt
@@ -10,7 +10,7 @@ describe('trim-path-prefixes', () => {
     '/Users/bob/Documents/file.txt'
     `
 
-    const trimmed = trimPathsPrefixes(text)
+    const trimmed = textTransformPaths(text)
     expect(trimmed).toEqual(`
     Documents/file.txt
     (Documents/file.txt
@@ -30,7 +30,7 @@ describe('trim-path-prefixes', () => {
     bar
     `
 
-    const trimmed = trimPathsPrefixes(text)
+    const trimmed = textTransformPaths(text)
     expect(trimmed).toEqual(`
     Documents\\file.txt
     (Documents\\file.txt)
@@ -48,7 +48,7 @@ describe('trim-path-prefixes', () => {
     '//localhost/c$/path/to/file.txt'
     `
 
-    const trimmed = trimPathsPrefixes(text)
+    const trimmed = textTransformPaths(text)
     expect(trimmed).toEqual(`
     /path/to/file.txt
     (/path/to/file.txt)
@@ -61,7 +61,7 @@ describe('trim-path-prefixes', () => {
     any/path/to/node_modules/foo/bar
     `
 
-    const trimmed = trimPathsPrefixes(text)
+    const trimmed = textTransformPaths(text)
     expect(trimmed).toEqual(`
     node_modules/foo/bar
     `)

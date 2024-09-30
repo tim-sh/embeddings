@@ -1,7 +1,7 @@
 const { proj } = require('../util/fs')
 const { issues: { relevantLabels } } = require(proj('data/config'))
 
-function transform(issue) {
+function issueTransformLabels(issue) {
   issue.labels = issue.labels
           .map(label => relevantLabels.exec(typeof label === 'string' ? label : label.name)
               ?.slice(1)
@@ -10,6 +10,9 @@ function transform(issue) {
           )
           .filter(Boolean)
       ?? []
+  return issue
 }
 
-module.exports = transform
+module.exports = {
+  issueTransformLabels
+}

@@ -1,4 +1,4 @@
-const { removeCodeDelimiters } = require('../../src/pipeline/remove-code-delimiters')
+const { textRemoveCodeDelimiters } = require('../../src/pipeline/text-remove-code-delimiters')
 
 describe('remove-code-delimiters', () => {
 
@@ -6,7 +6,7 @@ describe('remove-code-delimiters', () => {
 
     describe('with language identifier', () => {
       it('should remove the fences', async () => {
-        expect(removeCodeDelimiters(`
+        expect(textRemoveCodeDelimiters(`
           A
           \`\`\`js
           const foo1 = 'bar'
@@ -18,7 +18,7 @@ describe('remove-code-delimiters', () => {
           B
         `)
 
-        expect(removeCodeDelimiters(`
+        expect(textRemoveCodeDelimiters(`
           A
     \`\`\`js
           const foo2 = 'bar'
@@ -30,7 +30,7 @@ describe('remove-code-delimiters', () => {
           B
         `)
 
-        expect(removeCodeDelimiters(`
+        expect(textRemoveCodeDelimiters(`
           A \`\`\`js
           const foo3 = 'bar'
           \`\`\`
@@ -47,7 +47,7 @@ describe('remove-code-delimiters', () => {
 
     describe('without language identifier', () => {
       it('should remove the fences', async () => {
-        expect(removeCodeDelimiters(`
+        expect(textRemoveCodeDelimiters(`
           A
     \`\`\`
           const foo2 = 'bar'
@@ -59,7 +59,7 @@ describe('remove-code-delimiters', () => {
           B
         `)
 
-        expect(removeCodeDelimiters(`
+        expect(textRemoveCodeDelimiters(`
           A\`\`\`
           const foo3 = 'bar'
           \`\`\`
@@ -70,7 +70,7 @@ describe('remove-code-delimiters', () => {
           B
         `)
 
-        expect(removeCodeDelimiters(`
+        expect(textRemoveCodeDelimiters(`
           A
           \`\`\`const foo4 = 'bar'
           \`\`\`
@@ -81,7 +81,7 @@ describe('remove-code-delimiters', () => {
           B
         `)
 
-        expect(removeCodeDelimiters(`
+        expect(textRemoveCodeDelimiters(`
           A
           \`\`\`
           const foo5 = 'bar'\`\`\`
@@ -92,13 +92,13 @@ describe('remove-code-delimiters', () => {
           B
         `)
 
-        expect(removeCodeDelimiters(`
+        expect(textRemoveCodeDelimiters(`
           A \`\`\`const foo7 = 'bar'\`\`\` B
         `)).toEqual(`
           A const foo7 = 'bar' B
         `)
 
-        expect(removeCodeDelimiters(`
+        expect(textRemoveCodeDelimiters(`
           A\`\`\` const foo8 = 'bar' \`\`\`B
         `)).toEqual(`
           A const foo8 = 'bar' B
@@ -113,7 +113,7 @@ describe('remove-code-delimiters', () => {
   describe('inline code', () => {
 
     it('should remove the fences', async () => {
-      expect(removeCodeDelimiters(`
+      expect(textRemoveCodeDelimiters(`
         A
       \`const foo1 = 'bar'\`
         B
@@ -123,7 +123,7 @@ describe('remove-code-delimiters', () => {
         B
       `)
 
-      expect(removeCodeDelimiters(`
+      expect(textRemoveCodeDelimiters(`
         A \`  const foo2 = 'bar' \`B
       `)).toEqual(`
         A   const foo2 = 'bar' B

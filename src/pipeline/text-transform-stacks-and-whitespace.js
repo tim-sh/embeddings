@@ -1,7 +1,7 @@
 const { proj } = require('../util/fs')
 const { stacks: { maxLen } } = require(proj('data/config'))
 
-function shortenStacksAndTrim(text) {
+function textTransformStacksAndWhitespace(text) {
   let stackLen = 0
   let excludeFromMaxLen = false
 
@@ -30,7 +30,7 @@ function shortenStacksAndTrim(text) {
 }
 
 module.exports = {
-  shortenStacksAndTrim
+  textTransformStacksAndWhitespace
 }
 
 /**

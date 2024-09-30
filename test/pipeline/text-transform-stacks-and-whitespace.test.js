@@ -1,6 +1,6 @@
-const { shortenStacksAndTrim } = require('../../src/pipeline/shorten-stacks-and-trim')
+const { textTransformStacksAndWhitespace } = require('../../src/pipeline/text-transform-stacks-and-whitespace')
 
-describe('shorten-stacks-and-trim', () => {
+describe('text-transform-stacks-and-whitespace', () => {
   it('should handle Java stacks', async () => {
     const text = `
       Lorem ipsum dolor.
@@ -14,7 +14,7 @@ describe('shorten-stacks-and-trim', () => {
           at baz
       Dolor sit amet.
     `
-    const result = shortenStacksAndTrim(text)
+    const result = textTransformStacksAndWhitespace(text)
     expect(result).toEqual(`Lorem ipsum dolor.
 foo bar com.example.BazException: Unsupported IUZR
 at foo
@@ -40,7 +40,7 @@ Dolor sit amet.`)
           at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
           at node:internal/main/run_main_module:28:49
       `
-      const result = shortenStacksAndTrim(text)
+      const result = textTransformStacksAndWhitespace(text)
       expect(result).toEqual(`Error: e
 at Object.<anonymous> (/path/to/script.js:2:7)
 [cause]: Error: cause
@@ -78,7 +78,7 @@ at Object.<anonymous> (/path/to/script.js:1:3)`)
           at bar
           at baz
       `
-      const result = shortenStacksAndTrim(text)
+      const result = textTransformStacksAndWhitespace(text)
       expect(result).toEqual(`Error: e
 at Object.<anonymous> (/path/to/script.js:2:7)
 at foo
@@ -128,7 +128,7 @@ at bar`)
         foo node:internal
         bar
       `
-      const result = shortenStacksAndTrim(text)
+      const result = textTransformStacksAndWhitespace(text)
       expect(result).toEqual(`Error: Cannot find module 'foo.js'
 at bar
 at foo
@@ -159,7 +159,7 @@ bar`)
           at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
       Dolor sit amet.
     `
-    const result = shortenStacksAndTrim(text)
+    const result = textTransformStacksAndWhitespace(text)
     expect(result).toEqual(`Lorem ipsum dolor.
 foo bar com.example.BazException: Unsupported IUZR
 at foo
