@@ -20,7 +20,7 @@ describe('combined-issue-to-clean-text', () => {
     ])
   })
 
-  it('should x', async () => {
+  it('should transform issue to clean text', async () => {
     const issue = {
       number: 123,
       title: 'Something went wrong',
@@ -150,13 +150,13 @@ Caused by: com.example.db.jdbc.exceptions.JDBCDriverException:  DBTech JDBC: [26
     }
 
     const cleanText =
-        textRemoveCodeDelimiters(
-            textTransformPaths(
-                textTransformStacksAndWhitespace(
+        textTransformPaths(
+            textTransformStacksAndWhitespace(
+                textRemoveCodeDelimiters(
                     issueToText(
-                          await issueAddCommentTexts(
-                              issueTransformLabels(issue)
-                          )
+                        await issueAddCommentTexts(
+                            issueTransformLabels(issue)
+                        )
                     )
                 )
             )
@@ -187,7 +187,6 @@ Just a normal run will give this issue.
 ### OS / Environment
 Cloud Foundry
 ### Relevant log output
-\`shell
 com.example.services.impl.ContextualizedFooException: Error executing the statement (service 'PersistenceService$Default', event 'READ', entity 'PrivateDownloadService.fooDailyForDownload')
 at com.example.services.impl.ServiceImpl.dispatch(ServiceImpl.java:256)
 at com.example.services.impl.ServiceImpl.lambda$dispatchInChangeSetContext$2(ServiceImpl.java:203)
