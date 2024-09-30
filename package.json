@@ -15,5 +15,8 @@
     "testMatch": [
       "**/*.test.js"
     ]
+  },
+  "dependencies": {
+    "natural": "^8.0.1"
   }
 }
