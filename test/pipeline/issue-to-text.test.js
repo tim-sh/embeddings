@@ -14,7 +14,14 @@ describe('issue-to-text', () => {
 
     const text = issueToText(issue)
 
-    expect(text).toEqual('Issue title Issue body Comment 1 Comment 2 Comment 3')
+    expect(text).toEqual(`Issue title
+
+Issue body
+
+Comment 1
+Comment 2
+Comment 3
+`)
   })
 
   it('should ignore nullish body', async () => {
@@ -30,7 +37,12 @@ describe('issue-to-text', () => {
 
     const text = issueToText(issue)
 
-    expect(text).toEqual('Issue title Comment 1 Comment 2 Comment 3')
+    expect(text).toEqual(`Issue title
+
+Comment 1
+Comment 2
+Comment 3
+`)
   })
 
   it('should ignore empty comments', async () => {
@@ -42,6 +54,9 @@ describe('issue-to-text', () => {
 
     const text = issueToText(issue)
 
-    expect(text).toEqual('Issue title Issue body')
+    expect(text).toEqual(`Issue title
+
+Issue body
+`)
   })
 })

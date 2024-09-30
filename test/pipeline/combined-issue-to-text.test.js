@@ -162,7 +162,8 @@ Caused by: com.example.db.jdbc.exceptions.JDBCDriverException:  DBTech JDBC: [26
             )
         )
 
-    expect(cleanText).toEqual(`Something went wrong ### What happened?
+    expect(cleanText).toEqual(`Something went wrong
+### What happened?
 We have a select query where we are trying to do a deep read into an association.
 Here is the query.
 CqnSelect select = Select.from(Foo.class)
@@ -196,7 +197,10 @@ at com.example.impl.JDBCClient.executeQuery(JDBCClient.java:211)
 Caused by: com.example.FooDataStoreException: SQL: SELECT NULLS FIRST
 Caused by: com.example.db.jdbc.exceptions.JDBCDriverException:  DBTech JDBC: [260]: invalid column name: T0.MY_VIEW_MY_VIEW_ID: line 1 col 382 (at pos 381)
 at com.example.db.jdbc.exceptions.SQLExceptionSapDB._newInstance(SQLExceptionSapDB.java:209)
-at com.example.db.jdbc.exceptions.SQLExceptionSapDB.newInstance(SQLExceptionSapDB.java:42)`
+at com.example.db.jdbc.exceptions.SQLExceptionSapDB.newInstance(SQLExceptionSapDB.java:42)
+comment 1
+comment 2
+comment 3`
     )
 
   })
