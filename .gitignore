@@ -1,5 +1,7 @@
 data/.private
 
+*.bkp
+
 .idea
 
 logs
