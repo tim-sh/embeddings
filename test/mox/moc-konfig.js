@@ -12,6 +12,9 @@ jest.mock('../../data/.private/config.json', () => ({
 jest.mock('../../data/config', () => ({
   issues: {
     relevantLabels: /me(wow)! (.*)/
+  },
+  stacks: {
+    maxLen: 3
   }
 }))
 
