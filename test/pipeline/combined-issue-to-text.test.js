@@ -6,6 +6,7 @@ const { textTransformStacksAndWhitespace } = require('../../src/pipeline/text-tr
 const { issueToText } = require('../../src/pipeline/issue-to-text')
 const { issueAddCommentTexts } = require('../../src/pipeline/issue-add-comment-texts')
 const { issueTransformLabels } = require('../../src/pipeline/issue-transform-labels')
+const { textTransformLowercase } = require('../../src/pipeline/text-transform-lowercase')
 
 describe('combined-issue-to-text', () => {
 
@@ -150,54 +151,56 @@ Caused by: com.example.db.jdbc.exceptions.JDBCDriverException:  DBTech JDBC: [26
     }
 
     const cleanText =
-        textTransformPaths(
-            textTransformStacksAndWhitespace(
-                textRemoveCodeDelimiters(
-                    issueToText(
-                        await issueAddCommentTexts(
-                            issueTransformLabels(issue)
+        textTransformLowercase(
+            textTransformPaths(
+                textTransformStacksAndWhitespace(
+                    textRemoveCodeDelimiters(
+                        issueToText(
+                            await issueAddCommentTexts(
+                                issueTransformLabels(issue)
+                            )
                         )
                     )
                 )
             )
         )
 
-    expect(cleanText).toEqual(`Something went wrong
-### What happened?
-We have a select query where we are trying to do a deep read into an association.
-Here is the query.
-CqnSelect select = Select.from(Foo.class)
+    expect(cleanText).toEqual(`something went wrong
+### what happened?
+we have a select query where we are trying to do a deep read into an association.
+here is the query.
+cqnselect select = select.from(foo.class)
 .columns(daily -> daily._all(), daily -> daily.locations().expand())
-.orderBy(getOrderBy(viewName));
-Here are the entity files.
+.orderby(getorderby(viewname));
+here are the entity files.
 ----------------------------------------------------------------------------------------------------------------------------
-view FooView as select from Bar
+view fooview as select from bar
 {
 key bla,
 as bar
 };
-And the error says Invalid column BAR. We checked our view schema as well this column is not available in our schema. Not sure how the column name is getting generated like this.
+and the error says invalid column bar. we checked our view schema as well this column is not available in our schema. not sure how the column name is getting generated like this.
 <img width="452" alt="image" src="https://media.github.tools.example.com/bar">
-### Steps to reproduce
-Just a normal run will give this issue.
-### Versions
-| bar | <Add your repository here> |
+### steps to reproduce
+just a normal run will give this issue.
+### versions
+| bar | <add your repository here> |
 |:---------------------- | ----------- |
 |        | -- missing  |
 | @bar/baz      | 4.5.0       |
-### OS / Environment
-Cloud Foundry
-### Relevant log output
-com.example.services.impl.ContextualizedFooException: Error executing the statement (service 'PersistenceService$Default', event 'READ', entity 'PrivateDownloadService.fooDailyForDownload')
-at com.example.services.impl.ServiceImpl.dispatch(ServiceImpl.java:256)
-at com.example.services.impl.ServiceImpl.lambda$dispatchInChangeSetContext$2(ServiceImpl.java:203)
-Caused by: com.example.FooDataStoreException: Error executing the statement
-at com.example.impl.ExceptionHandler.dataStoreException(ExceptionHandler.java:62)
-at com.example.impl.JDBCClient.executeQuery(JDBCClient.java:211)
-Caused by: com.example.FooDataStoreException: SQL: SELECT NULLS FIRST
-Caused by: com.example.db.jdbc.exceptions.JDBCDriverException:  DBTech JDBC: [260]: invalid column name: T0.MY_VIEW_MY_VIEW_ID: line 1 col 382 (at pos 381)
-at com.example.db.jdbc.exceptions.SQLExceptionSapDB._newInstance(SQLExceptionSapDB.java:209)
-at com.example.db.jdbc.exceptions.SQLExceptionSapDB.newInstance(SQLExceptionSapDB.java:42)
+### os / environment
+cloud foundry
+### relevant log output
+com.example.services.impl.contextualizedfooexception: error executing the statement (service 'persistenceservice$default', event 'read', entity 'privatedownloadservice.foodailyfordownload')
+at com.example.services.impl.serviceimpl.dispatch(serviceimpl.java:256)
+at com.example.services.impl.serviceimpl.lambda$dispatchinchangesetcontext$2(serviceimpl.java:203)
+caused by: com.example.foodatastoreexception: error executing the statement
+at com.example.impl.exceptionhandler.datastoreexception(exceptionhandler.java:62)
+at com.example.impl.jdbcclient.executequery(jdbcclient.java:211)
+caused by: com.example.foodatastoreexception: sql: select nulls first
+caused by: com.example.db.jdbc.exceptions.jdbcdriverexception:  dbtech jdbc: [260]: invalid column name: t0.my_view_my_view_id: line 1 col 382 (at pos 381)
+at com.example.db.jdbc.exceptions.sqlexceptionsapdb._newinstance(sqlexceptionsapdb.java:209)
+at com.example.db.jdbc.exceptions.sqlexceptionsapdb.newinstance(sqlexceptionsapdb.java:42)
 comment 1
 comment 2
 comment 3`
