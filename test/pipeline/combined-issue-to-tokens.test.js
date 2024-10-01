@@ -7,6 +7,7 @@ const { issueToText } = require('../../src/pipeline/issue-to-text')
 const { issueAddCommentTexts } = require('../../src/pipeline/issue-add-comment-texts')
 const { issueTransformLabels } = require('../../src/pipeline/issue-transform-labels')
 const { textToTokens } = require('../../src/pipeline/text-to-tokens')
+const { textTransformLowercase } = require('../../src/pipeline/text-transform-lowercase')
 
 describe('combined-issue-to-tokens', () => {
 
@@ -31,12 +32,14 @@ describe('combined-issue-to-tokens', () => {
 
     const tokens =
         textToTokens(
-            textTransformPaths(
-                textTransformStacksAndWhitespace(
-                    textRemoveCodeDelimiters(
-                        issueToText(
-                            await issueAddCommentTexts(
-                                issueTransformLabels(issue)
+            textTransformLowercase(
+                textTransformPaths(
+                    textTransformStacksAndWhitespace(
+                        textRemoveCodeDelimiters(
+                            issueToText(
+                                await issueAddCommentTexts(
+                                    issueTransformLabels(issue)
+                                )
                             )
                         )
                     )
@@ -45,23 +48,23 @@ describe('combined-issue-to-tokens', () => {
         )
 
     expect(tokens).toEqual([
-      'Something',
+      'something',
       'went',
       'wrong',
-      'Oh',
+      'oh',
       'well',
       'you',
       'know',
       'something',
       'went',
       'wrong',
-      'I',
+      'i',
       'just',
       'don',
       't',
       'know',
       'what',
-      'Can',
+      'can',
       'u',
       'help',
       'comment',
