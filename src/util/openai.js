@@ -42,4 +42,39 @@ async function completions(message, {
       })
 }
 
-module.exports = { completions }
+async function embeddings(ngrams, {
+  model = 'EMBED_ADA_002'
+} = {}) {
+
+  const { deploymentUrl, costPerToken, credentialsKey } = models[model]
+
+  return fetch(`${deploymentUrl}/embeddings?api-version=2024-02-01`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'AI-Resource-Group': 'default',
+      Authorization: `Bearer ${await getToken(credentials[credentialsKey])}`
+    },
+    body: JSON.stringify({
+      input: ngrams
+    })
+  })
+      .then(async response => {
+        const json = await response.json()
+        if (!response.ok) {
+          throw new Error(json.error.message)
+        }
+        const { data, usage: { total_tokens } } = json
+        const embeddings = data.map(d => d.embedding)
+        const costs = total_tokens * costPerToken
+        return {
+          embeddings,
+          costs
+        }
+      })
+}
+
+module.exports = {
+  completions,
+  embeddings
+}

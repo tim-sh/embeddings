@@ -1,6 +1,7 @@
 const assert = require('node:assert')
-
 const TfIdf = require('natural').TfIdf
+
+const { tfIdf: { threshold } } = require('../../data/config')
 
 const { issueTransformLabels } = require('../pipeline/issue-transform-labels')
 const { issueAddCommentTexts } = require('../pipeline/issue-add-comment-texts')
@@ -12,10 +13,9 @@ const { textToTokens } = require('../pipeline/text-to-tokens')
 const { runPipeline } = require('../pipeline/run-pipeline')
 const { tokensRemoveStopwords } = require('../pipeline/tokens-remove-stopwords')
 const { tokensToNgrams } = require('../pipeline/tokens-to-ngrams')
-const { tfIdf } = require('../../data/config')
 const { textTransformLowercase } = require('../pipeline/text-transform-lowercase')
-
-const N = 2
+const { embeddings } = require('../util/openai')
+const { meanArr } = require('../util/maths')
 
 class Library {
   constructor(corpus) {
@@ -58,19 +58,22 @@ class Library {
       this.tfIdf.addDocument(doc.ngrams)
     })
 
-    const tfIdfs = new Map()
+    this.tfIdfs = new Map()
     this.docs.forEach(doc =>
-        doc.ngrams.forEach(ngram => tfIdfs.set(ngram, this.tfIdf.tfidf([ngram], doc.i)))
+        doc.ngrams.forEach(ngram => this.tfIdfs.set(ngram, this.tfIdf.tfidf([ngram], doc.i)))
     )
 
-    const tfIdfMin = Math.min(...tfIdfs.values())
-    const tfIdfMax = Math.max(...tfIdfs.values())
+    const tfIdfMin = Math.min(...this.tfIdfs.values())
+    const tfIdfMax = Math.max(...this.tfIdfs.values())
     // Normalize to [0,1]
-    tfIdfs.forEach((tfIdf, ngram) => tfIdfs.set(ngram, (tfIdf - tfIdfMin) / (tfIdfMax - tfIdfMin)))
+    this.tfIdfs.forEach((tfIdf, ngram) => this.tfIdfs.set(ngram, (tfIdf - tfIdfMin) / (tfIdfMax - tfIdfMin)))
 
-    this.docs.forEach(doc =>
-        doc.tfIdfs = doc.ngrams.map(ngram => tfIdfs.get(ngram))
-    )
+    for (const doc of this.docs) {
+      doc.tfIdfs = doc.ngrams.map(ngram => this.tfIdfs.get(ngram))
+      const relevantNgrams = doc.ngrams.filter((ngram, i) => doc.tfIdfs[i] >= threshold)
+      const ngEmbeddings = (await embeddings(relevantNgrams)).embeddings
+      doc.embedding = meanArr(ngEmbeddings)
+    }
   }
 
   static getDocType(doc) {

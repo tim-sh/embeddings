@@ -1,4 +1,7 @@
-const apiUrl = 'https://glkjuhpuewqahtjLAKUZTE.com'
+const apiUrl = 'https://api.juhpuewqahtjLAKUZTE.com'
+const tokenUrl = 'https://token.sjfirwKJHRhjhj.com'
+const deploymentUrl = 'https://dep.sjfirwKJHRhjhj.com'
+const outputLength = 128
 
 jest.mock('../../data/.private/config.json', () => ({
   github: {
@@ -6,6 +9,21 @@ jest.mock('../../data/.private/config.json', () => ({
     token: 'token',
     org: 'org',
     repo: 'repo'
+  },
+  models: {
+    EMBED_ADA_002: {
+      deploymentUrl,
+      outputLength,
+      costPerToken: 1e-8,
+      credentialsKey: 'embeddings'
+    }
+  },
+  credentials: {
+    embeddings: {
+      url: tokenUrl,
+      clientid: 'clientid',
+      clientsecret: 'clientsecret'
+    }
   }
 }))
 
@@ -15,9 +33,15 @@ jest.mock('../../data/config', () => ({
   },
   stacks: {
     maxLen: 3
+  },
+  tfIdf: {
+    threshold: 0.2
   }
 }))
 
 module.exports = {
-  apiUrl
+  apiUrl,
+  tokenUrl,
+  deploymentUrl,
+  outputLength
 }

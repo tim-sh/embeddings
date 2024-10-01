@@ -1,4 +1,4 @@
-const { apiUrl } = require('../mox/moc-konfig')
+const { apiUrl, tokenUrl, deploymentUrl, outputLength } = require('../mox/moc-konfig')
 
 const { Library } = require('../../src/library/library')
 
@@ -45,9 +45,16 @@ describe('library', () => {
     fetchMock.mock(`${apiUrl}/repos/org/repo/issues/134/comments`, [
       { body: 'Disk I/O contention could be causing these delays under high load.' }
     ])
+    fetchMock.mock(`${tokenUrl}/oauth/token?grant_type=client_credentials&response_type=token`, { access_token: 'token' })
+    fetchMock.mock(`${deploymentUrl}/embeddings?api-version=2024-02-01`, (url, req) => ({
+      data: Array.from({ length: JSON.parse(req.body.toString()).input.length }, () => ({
+        embedding: Array.from({ length: outputLength }, () => -1 + 2 * Math.random())  // values in [-1, 1)
+      })),
+      usage: { total_tokens: 100 }
+    }))
   })
 
-  it('inits', async () => {
+  it('computes n-grams, TF-IDFs and mean embedding for each document', async () => {
     const corpus = [
       {
         number: 123,
@@ -62,64 +69,64 @@ describe('library', () => {
         body: `I get an error message: "Known problem with renderer: 124 (failed to reconcile)". It may be related to the reconcile process.`
       },
       {
-        "number": 125,
-        "title": "Database timeout after jiffy",
-        "labels": ["bug", "database"],
-        "body": "The database connection times out within a jiffy when trying to query large datasets. It seems related to the connection pool limit."
+        'number': 125,
+        'title': 'Database timeout after jiffy',
+        'labels': ['bug', 'database'],
+        'body': 'The database connection times out within a jiffy when trying to query large datasets. It seems related to the connection pool limit.'
       },
       {
-        "number": 126,
-        "title": "File system permissions error (jiffy delay)",
-        "labels": ["bug", "filesystem"],
-        "body": "There is a jiffy delay when accessing certain protected files. This may be caused by incorrect permissions in the mounted directory."
+        'number': 126,
+        'title': 'File system permissions error (jiffy delay)',
+        'labels': ['bug', 'filesystem'],
+        'body': 'There is a jiffy delay when accessing certain protected files. This may be caused by incorrect permissions in the mounted directory.'
       },
       {
-        "number": 127,
-        "title": "Memory leak after repeated operations in jiffy",
-        "labels": ["bug", "memory"],
-        "body": "Memory consumption increases drastically when performing heavy operations in a jiffy. Repeated operations lead to an out-of-memory error."
+        'number': 127,
+        'title': 'Memory leak after repeated operations in jiffy',
+        'labels': ['bug', 'memory'],
+        'body': 'Memory consumption increases drastically when performing heavy operations in a jiffy. Repeated operations lead to an out-of-memory error.'
       },
       {
-        "number": 128,
-        "title": "API call fails to return in a jiffy",
-        "labels": ["bug", "API"],
-        "body": "API calls to the third-party service fail if they don’t return within a jiffy. Is this related to the timeout configuration on the server?"
+        'number': 128,
+        'title': 'API call fails to return in a jiffy',
+        'labels': ['bug', 'API'],
+        'body': 'API calls to the third-party service fail if they don’t return within a jiffy. Is this related to the timeout configuration on the server?'
       },
       {
-        "number": 129,
-        "title": "Thread locking occurs in a jiffy under high load",
-        "labels": ["bug", "threading"],
-        "body": "Thread locking occurs in a jiffy when the server is under high load. This might be a deadlock issue in the concurrency control mechanism."
+        'number': 129,
+        'title': 'Thread locking occurs in a jiffy under high load',
+        'labels': ['bug', 'threading'],
+        'body': 'Thread locking occurs in a jiffy when the server is under high load. This might be a deadlock issue in the concurrency control mechanism.'
       },
       {
-        "number": 130,
-        "title": "Cache invalidation takes longer than a jiffy",
-        "labels": ["bug", "performance"],
-        "body": "Cache invalidation process takes longer than a jiffy during high traffic periods. This delays content updates for end users."
+        'number': 130,
+        'title': 'Cache invalidation takes longer than a jiffy',
+        'labels': ['bug', 'performance'],
+        'body': 'Cache invalidation process takes longer than a jiffy during high traffic periods. This delays content updates for end users.'
       },
       {
-        "number": 131,
-        "title": "Session expires in a jiffy",
-        "labels": ["bug", "authentication"],
-        "body": "User sessions are expiring within a jiffy instead of the expected 30-minute window. This is leading to premature logouts across the application."
+        'number': 131,
+        'title': 'Session expires in a jiffy',
+        'labels': ['bug', 'authentication'],
+        'body': 'User sessions are expiring within a jiffy instead of the expected 30-minute window. This is leading to premature logouts across the application.'
       },
       {
-        "number": 132,
-        "title": "Scheduler misses tasks within a jiffy",
-        "labels": ["bug", "scheduler"],
-        "body": "Tasks scheduled to run every minute sometimes get missed if the system experiences a jiffy delay. It’s causing synchronization issues."
+        'number': 132,
+        'title': 'Scheduler misses tasks within a jiffy',
+        'labels': ['bug', 'scheduler'],
+        'body': 'Tasks scheduled to run every minute sometimes get missed if the system experiences a jiffy delay. It’s causing synchronization issues.'
       },
       {
-        "number": 133,
-        "title": "Graphics rendering delay beyond a jiffy",
-        "labels": ["bug", "graphics"],
-        "body": "Graphics rendering takes longer than a jiffy under certain resolutions. The renderer seems to struggle when dealing with high DPI screens."
+        'number': 133,
+        'title': 'Graphics rendering delay beyond a jiffy',
+        'labels': ['bug', 'graphics'],
+        'body': 'Graphics rendering takes longer than a jiffy under certain resolutions. The renderer seems to struggle when dealing with high DPI screens.'
       },
       {
-        "number": 134,
-        "title": "Disk read operations exceed jiffy threshold",
-        "labels": ["bug", "performance"],
-        "body": "Disk read operations exceed the jiffy threshold in high-load environments. Could this be related to the disk I/O scheduler?"
+        'number': 134,
+        'title': 'Disk read operations exceed jiffy threshold',
+        'labels': ['bug', 'performance'],
+        'body': 'Disk read operations exceed the jiffy threshold in high-load environments. Could this be related to the disk I/O scheduler?'
       }
     ]
 
@@ -131,5 +138,16 @@ describe('library', () => {
 
     expect(library.tfIdfs.get('when')).toBeLessThan(library.tfIdfs.get('jiffy'))
     expect(library.tfIdfs.get('jiffy')).toBeLessThan(library.tfIdfs.get('reconcile'))
+
+    expect(library.docs.length).toBe(12)
+
+    library.docs.forEach(doc => {
+      expect(doc.embedding).toHaveLength(outputLength)
+      doc.embedding.forEach(value => {
+        // [-1, 1] since OpenAI embeddings are unit vectors
+        expect(value).toBeGreaterThanOrEqual(-1)
+        expect(value).toBeLessThanOrEqual(1)
+      })
+    })
   })
 })
