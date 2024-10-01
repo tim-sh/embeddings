@@ -18,58 +18,47 @@ const { embeddings } = require('../util/openai')
 const { meanArr } = require('../util/maths')
 
 class Library {
-  constructor(corpus) {
-    assert(Array.isArray(corpus), 'corpus must be an array')
-
-    this.ngramsPipelines = {
-      [docTypes.GITHUB_ISSUE]: [
-        issueTransformLabels,
-        issueAddCommentTexts,
-        issueToText,
-        textRemoveCodeDelimiters,
-        textTransformStacksAndWhitespace,
-        textTransformPaths,
-        textTransformLowercase,
-        textToTokens,
-        tokensRemoveStopwords,
-        tokensToNgrams
-      ]
-    }
-
-    this.corpus = corpus
-    this.tfIdf = new TfIdf()
-
+  constructor() {
+    this.termFreqCalculator = new TfIdf()
   }
 
-  async init() {
-    this.docs = await Promise.all(
-        this.corpus
-            .map(async doc => ({
-              type: Library.getDocType(doc),
-              id: Library.getId(doc),
-              ngrams: (await runPipeline(this.ngramsPipelines[Library.getDocType(doc)], doc))
-                  .filter(Boolean)
-                  .flat()
-            }))
-    )
+  async init(corpus) {
+    this.docs = await Promise.all(corpus.map((extDoc, i) => this.#toDoc(extDoc, i)))
+    this.docs.forEach(doc => this.termFreqCalculator.addDocument(doc.ngrams))
+    await this.#docsUpdated()
+  }
 
-    this.docs.forEach((doc, i) => {
-      doc.i = i
-      this.tfIdf.addDocument(doc.ngrams)
-    })
+  async addDoc(extDoc) {
+    const doc = await this.#toDoc(extDoc, this.docs.length)
+    this.docs.push(doc)
+    this.termFreqCalculator.addDocument(doc.ngrams)
+    await this.#docsUpdated()
+  }
 
-    this.tfIdfs = new Map()
+  async #toDoc(extDoc, i) {
+    return {
+      type: Library.getDocType(extDoc),
+      id: Library.getId(extDoc),
+      i,
+      ngrams: (await runPipeline(Library.ngramsPipelines[Library.getDocType(extDoc)], extDoc))
+          .filter(Boolean)
+          .flat()
+    }
+  }
+
+  async #docsUpdated() {
+    const tfIdfs = new Map()
     this.docs.forEach(doc =>
-        doc.ngrams.forEach(ngram => this.tfIdfs.set(ngram, this.tfIdf.tfidf([ngram], doc.i)))
+        doc.ngrams.forEach(ngram => tfIdfs.set(ngram, this.termFreqCalculator.tfidf([ngram], doc.i)))
     )
 
-    const tfIdfMin = Math.min(...this.tfIdfs.values())
-    const tfIdfMax = Math.max(...this.tfIdfs.values())
+    const tfIdfMin = Math.min(...tfIdfs.values())
+    const tfIdfMax = Math.max(...tfIdfs.values())
     // Normalize to [0,1]
-    this.tfIdfs.forEach((tfIdf, ngram) => this.tfIdfs.set(ngram, (tfIdf - tfIdfMin) / (tfIdfMax - tfIdfMin)))
+    tfIdfs.forEach((tfIdf, ngram) => tfIdfs.set(ngram, (tfIdf - tfIdfMin) / (tfIdfMax - tfIdfMin)))
 
     for (const doc of this.docs) {
-      doc.tfIdfs = doc.ngrams.map(ngram => this.tfIdfs.get(ngram))
+      doc.tfIdfs = doc.ngrams.map(ngram => tfIdfs.get(ngram))
       const relevantNgrams = doc.ngrams.filter((ngram, i) => doc.tfIdfs[i] >= threshold)
       const ngEmbeddings = (await embeddings(relevantNgrams)).embeddings
       doc.embedding = meanArr(ngEmbeddings)
@@ -83,6 +72,23 @@ class Library {
 
   static getId(doc) {
     return doc.number
+  }
+
+  static get ngramsPipelines() {
+    return {
+      [docTypes.GITHUB_ISSUE]: [
+        issueTransformLabels,
+        issueAddCommentTexts,
+        issueToText,
+        textRemoveCodeDelimiters,
+        textTransformStacksAndWhitespace,
+        textTransformPaths,
+        textTransformLowercase,
+        textToTokens,
+        tokensRemoveStopwords,
+        tokensToNgrams
+      ]
+    }
   }
 }
 
