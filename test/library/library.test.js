@@ -129,6 +129,7 @@ describe('library', () => {
     expect(library.tfIdfs.size).toBeGreaterThan(20)
     expect(Array.from(library.tfIdfs.values()).some(tfIdf => 0 > tfIdf || tfIdf > 1)).toBeFalsy()
 
+    expect(library.tfIdfs.get('when')).toBeLessThan(library.tfIdfs.get('jiffy'))
     expect(library.tfIdfs.get('jiffy')).toBeLessThan(library.tfIdfs.get('reconcile'))
   })
 })
