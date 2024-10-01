@@ -14,7 +14,7 @@ const { runPipeline } = require('../pipeline/run-pipeline')
 const { tokensRemoveStopwords } = require('../pipeline/tokens-remove-stopwords')
 const { tokensToNgrams } = require('../pipeline/tokens-to-ngrams')
 const { textTransformLowercase } = require('../pipeline/text-transform-lowercase')
-const { embeddings } = require('../util/openai')
+const { embed } = require('../util/openai')
 const { meanArr, dot, descending } = require('../util/maths')
 
 class Library {
@@ -91,8 +91,8 @@ class Library {
     const embeddingsByNgramsArray = Array.from(embeddingsByNgrams.keys())
     for (let i = 0; i < embeddingsByNgrams.size; i += chunkSize) {
       const chunk = embeddingsByNgramsArray.slice(i, i + chunkSize)
-      const embeddings1 = (await embeddings(chunk)).embeddings
-      chunk.forEach((ngram, i) => embeddingsByNgrams.set(ngram, embeddings1[i]))
+      const { embeddings } = await embed(chunk)
+      chunk.forEach((ngram, i) => embeddingsByNgrams.set(ngram, embeddings[i]))
     }
 
     this.docs.forEach(doc =>
