@@ -1,6 +1,7 @@
 const assert = require('node:assert')
-
 const TfIdf = require('natural').TfIdf
+
+const { tfIdf: { threshold } } = require('../../data/config')
 
 const { issueTransformLabels } = require('../pipeline/issue-transform-labels')
 const { issueAddCommentTexts } = require('../pipeline/issue-add-comment-texts')
@@ -12,17 +13,87 @@ const { textToTokens } = require('../pipeline/text-to-tokens')
 const { runPipeline } = require('../pipeline/run-pipeline')
 const { tokensRemoveStopwords } = require('../pipeline/tokens-remove-stopwords')
 const { tokensToNgrams } = require('../pipeline/tokens-to-ngrams')
-const { tfIdf } = require('../../data/config')
 const { textTransformLowercase } = require('../pipeline/text-transform-lowercase')
-
-const N = 2
+const { embeddings } = require('../util/openai')
+const { meanArr, dot, descending } = require('../util/maths')
 
 class Library {
-  constructor(corpus) {
-    assert(Array.isArray(corpus), 'corpus must be an array')
+  constructor() {
+    this.termFreqCalculator = new TfIdf()
+  }
 
-    this.ngramsPipelines = {
-      [docTypes.GITHUB_ISSUE]: [
+  async init(corpus) {
+    this.docs = await Promise.all(corpus.map((extDoc, i) => Library.#toDoc(extDoc, i)))
+    this.docs.forEach(doc => this.termFreqCalculator.addDocument(doc.ngrams))
+    await this.#docsUpdated()
+  }
+
+  async addDoc(extDoc) {
+    const doc = await Library.#toDoc(extDoc, this.docs.length)
+    this.docs.push(doc)
+    this.termFreqCalculator.addDocument(doc.ngrams)
+    await this.#docsUpdated()
+  }
+
+  getMostSimilarDocs(docId, n = 1, type = Library.docTypes.GITHUB_ISSUE) {
+    const givenDoc = this.docs.find(doc => doc.type === type && doc.id === docId)
+    if (!givenDoc) {
+      return null
+    }
+    return this.docs
+        .filter(otherDoc => otherDoc.type === type && otherDoc.id !== docId)
+        .map(doc => {
+          return {
+            id: doc.id,
+            cosSimilarity: dot(givenDoc.embedding, doc.embedding)
+          }
+        })
+        .sort(({ cosSimilarity: s1 }, { cosSimilarity: s2 }) => descending(s1, s2))
+        .slice(0, n)
+  }
+
+  static async #toDoc(extDoc, i) {
+    return {
+      type: Library.getDocType(extDoc),
+      id: Library.getId(extDoc),
+      i,
+      ngrams: (await runPipeline(Library.ngramsPipelines[Library.getDocType(extDoc)], extDoc))
+          .filter(Boolean)
+          .flat()
+    }
+  }
+
+  async #docsUpdated() {
+    const tfIdfs = new Map()
+    this.docs.forEach(doc =>
+        doc.ngrams.forEach(ngram => tfIdfs.set(ngram, this.termFreqCalculator.tfidf([ngram], doc.i)))
+    )
+
+    const tfIdfMin = Math.min(...tfIdfs.values())
+    const tfIdfMax = Math.max(...tfIdfs.values())
+    // Normalize to [0,1]
+    tfIdfs.forEach((tfIdf, ngram) => tfIdfs.set(ngram, (tfIdf - tfIdfMin) / (tfIdfMax - tfIdfMin)))
+
+    for (const doc of this.docs) {
+      doc.tfIdfs = doc.ngrams.map(ngram => tfIdfs.get(ngram))
+      const relevantNgrams = doc.ngrams.filter((ngram, i) => doc.tfIdfs[i] >= threshold)
+      const ngEmbeddings = (await embeddings(relevantNgrams)).embeddings
+      doc.embedding = meanArr(ngEmbeddings)
+    }
+  }
+
+  static getDocType(doc) {
+    assert('number' in doc && doc.title && doc.labels, 'doc must be a GitHub issue')
+    return this.docTypes.GITHUB_ISSUE
+  }
+
+  static getId(doc) {
+    return doc.number
+  }
+
+  static get ngramsPipelines() {
+    return {
+      [this.docTypes.GITHUB_ISSUE]: [
         issueTransformLabels,
         issueAddCommentTexts,
         issueToText,
@@ -35,59 +106,15 @@ class Library {
         tokensToNgrams
       ]
     }
-
-    this.corpus = corpus
-    this.tfIdf = new TfIdf()
-
   }
 
-  async init() {
-    this.docs = await Promise.all(
-        this.corpus
-            .map(async doc => ({
-              type: Library.getDocType(doc),
-              id: Library.getId(doc),
-              ngrams: (await runPipeline(this.ngramsPipelines[Library.getDocType(doc)], doc))
-                  .filter(Boolean)
-                  .flat()
-            }))
-    )
-
-    this.docs.forEach((doc, i) => {
-      doc.i = i
-      this.tfIdf.addDocument(doc.ngrams)
-    })
-
-    const tfIdfs = new Map()
-    this.docs.forEach(doc =>
-        doc.ngrams.forEach(ngram => tfIdfs.set(ngram, this.tfIdf.tfidf([ngram], doc.i)))
-    )
-
-    const tfIdfMin = Math.min(...tfIdfs.values())
-    const tfIdfMax = Math.max(...tfIdfs.values())
-    // Normalize to [0,1]
-    tfIdfs.forEach((tfIdf, ngram) => tfIdfs.set(ngram, (tfIdf - tfIdfMin) / (tfIdfMax - tfIdfMin)))
-
-    this.docs.forEach(doc =>
-        doc.tfIdfs = doc.ngrams.map(ngram => tfIdfs.get(ngram))
-    )
+  static get docTypes() {
+    return {
+      GITHUB_ISSUE: 1
+    }
   }
-
-  static getDocType(doc) {
-    assert('number' in doc && doc.title && doc.labels, 'doc must be a GitHub issue')
-    return docTypes.GITHUB_ISSUE
-  }
-
-  static getId(doc) {
-    return doc.number
-  }
-}
-
-const docTypes = {
-  GITHUB_ISSUE: 1
 }
 
 module.exports = {
-  Library,
-  ...docTypes
+  Library
 }

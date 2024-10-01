@@ -81,7 +81,7 @@
         <mxCell id="v6B5wqSu6SAp7sWqbgs--132" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="v6B5wqSu6SAp7sWqbgs--127" target="v6B5wqSu6SAp7sWqbgs--131" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="v6B5wqSu6SAp7sWqbgs--127" value="embed individual&#xa;n-grams" style="" parent="1" vertex="1">
+        <mxCell id="v6B5wqSu6SAp7sWqbgs--127" value="embed individual&#xa;n-grams" style="fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" parent="1" vertex="1">
           <mxGeometry x="350" y="1060" width="110" height="50" as="geometry" />
         </mxCell>
         <mxCell id="v6B5wqSu6SAp7sWqbgs--130" value="&lt;ul&gt;&lt;li&gt;requires access to n-grams of all issues or saved TF-IDF instance&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;whiteSpace=wrap;verticalAlign=middle;overflow=hidden;" parent="1" vertex="1">
@@ -90,10 +90,10 @@
         <mxCell id="v6B5wqSu6SAp7sWqbgs--134" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="v6B5wqSu6SAp7sWqbgs--131" target="v6B5wqSu6SAp7sWqbgs--133" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="v6B5wqSu6SAp7sWqbgs--131" value="[weigh the&#xa;embeddings]" style="" parent="1" vertex="1">
+        <mxCell id="v6B5wqSu6SAp7sWqbgs--131" value="[weigh the&#xa;embeddings]" style="fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" parent="1" vertex="1">
           <mxGeometry x="350" y="1150" width="110" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="v6B5wqSu6SAp7sWqbgs--133" value="combine into&#xa;one embedding" style="" parent="1" vertex="1">
+        <mxCell id="v6B5wqSu6SAp7sWqbgs--133" value="combine into&#xa;one embedding" style="fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" parent="1" vertex="1">
           <mxGeometry x="350" y="1240" width="110" height="50" as="geometry" />
         </mxCell>
         <mxCell id="cVfKy4Dpxkk26B2VuoCf-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="cVfKy4Dpxkk26B2VuoCf-1" target="v6B5wqSu6SAp7sWqbgs--112" edge="1">
