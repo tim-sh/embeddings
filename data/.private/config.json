@@ -1,1 +1,22 @@
-{}
+{
+  "github": {
+    "apiUrl": "your GitHub API URL",
+    "token": "your GitHub token to access the above-mentioned APIs",
+    "org": "your GitHub organization",
+    "repo": "your GitHub repository"
+  },
+  "models": {
+    "EMBED_ADA_002": {
+      "deploymentUrl": "your OpenAI model deployment URL",
+      "credentialsKey": "myKey"
+    },
+    "//": "add more"
+  },
+  "credentials": {
+    "myKey": {
+      "url": "your authentication URL for the OpenAI API",
+      "clientid": "your client ID",
+      "clientsecret": "your client secret"
+    }
+  }
+}

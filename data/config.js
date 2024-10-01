@@ -1,6 +1,6 @@
 module.exports = {
   issues: {
-    relevantLabels: /^in (.*)|(.*\b(cap|cds).*)/i
+    relevantLabels: /your regex/
   },
   stacks: {
     maxLen: 10
