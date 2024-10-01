@@ -126,8 +126,9 @@ describe('library', () => {
     const library = new Library(corpus)
     await library.init()
 
-    const tfIdfs = library.docs.flatMap(doc => doc.tfIdfs)
-    expect(tfIdfs.length).toBeGreaterThan(20)
-    expect(tfIdfs.some(tfIdf => 0 > tfIdf || tfIdf > 1)).toBeFalsy()
+    expect(library.tfIdfs.size).toBeGreaterThan(20)
+    expect(Array.from(library.tfIdfs.values()).some(tfIdf => 0 > tfIdf || tfIdf > 1)).toBeFalsy()
+
+    expect(library.tfIdfs.get('jiffy')).toBeLessThan(library.tfIdfs.get('reconcile'))
   })
 })
