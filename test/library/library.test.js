@@ -4,6 +4,8 @@ const { Library } = require('../../src/library/library')
 
 describe('library', () => {
 
+  let iDoc
+
   beforeAll(async () => {
     const { default: fetchMock } = await import('fetch-mock')
     fetchMock.mock(`${apiUrl}/repos/org/repo/issues/123/comments`, [
@@ -47,17 +49,23 @@ describe('library', () => {
     ])
     fetchMock.mock(`${tokenUrl}/oauth/token?grant_type=client_credentials&response_type=token`, { access_token: 'token' })
     fetchMock.mock(`${deploymentUrl}/embeddings?api-version=2024-02-01`, (url, req) => {
+      iDoc++
       const input = JSON.parse(req.body.toString()).input
       return {
         data: Array.from({ length: input.length }, (_, g) => {
           const firstByte = input[g].charCodeAt(0) & 0xff // start deterministically for each input string
           return {
-            embedding: Array.from({ length: outputLength }, (_, i) => ((firstByte + i) % 256) / 256)  // values in [-1, 1)
+            // Simulate high similarity between first two documents
+            embedding: Array.from({ length: outputLength }, (_, i) => (iDoc < 2 && i < 5 ? 1 - i/2 : ((firstByte + i) % 100) / 100))  // values in [-1, 1)
           }
         }),
         usage: { total_tokens: 100 }
       }
     })
+  })
+
+  beforeEach(async () => {
+    iDoc = -1
   })
 
   const corpus = [
@@ -176,5 +184,20 @@ describe('library', () => {
       expect(library1.docs[i].ngrams).toEqual(library2.docs[i].ngrams)
       expect(library1.docs[i].embedding).toEqual(library2.docs[i].embedding)
     }
+  })
+
+  it('gets most similar doc', async () => {
+    const library = new Library()
+    await library.init(corpus)
+
+    const similarDocs = library.getMostSimilarDocs(123, 7)
+
+    expect(similarDocs).toHaveLength(7)
+    similarDocs.forEach(({ id, cosSimilarity }, i) => {
+      expect(library.docs.some(doc => doc.id === id)).toBe(true)
+      expect(cosSimilarity).toBeGreaterThan(similarDocs[i + 1]?.cosSimilarity ?? 0)
+    })
+
+    expect(similarDocs[0].id).toBe(124)
   })
 })

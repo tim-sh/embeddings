@@ -15,7 +15,7 @@ const { tokensRemoveStopwords } = require('../pipeline/tokens-remove-stopwords')
 const { tokensToNgrams } = require('../pipeline/tokens-to-ngrams')
 const { textTransformLowercase } = require('../pipeline/text-transform-lowercase')
 const { embeddings } = require('../util/openai')
-const { meanArr } = require('../util/maths')
+const { meanArr, dot, descending } = require('../util/maths')
 
 class Library {
   constructor() {
@@ -23,19 +23,36 @@ class Library {
   }
 
   async init(corpus) {
-    this.docs = await Promise.all(corpus.map((extDoc, i) => this.#toDoc(extDoc, i)))
+    this.docs = await Promise.all(corpus.map((extDoc, i) => Library.#toDoc(extDoc, i)))
     this.docs.forEach(doc => this.termFreqCalculator.addDocument(doc.ngrams))
     await this.#docsUpdated()
   }
 
   async addDoc(extDoc) {
-    const doc = await this.#toDoc(extDoc, this.docs.length)
+    const doc = await Library.#toDoc(extDoc, this.docs.length)
     this.docs.push(doc)
     this.termFreqCalculator.addDocument(doc.ngrams)
     await this.#docsUpdated()
   }
 
-  async #toDoc(extDoc, i) {
+  getMostSimilarDocs(docId, n = 1, type = Library.docTypes.GITHUB_ISSUE) {
+    const givenDoc = this.docs.find(doc => doc.type === type && doc.id === docId)
+    if (!givenDoc) {
+      return null
+    }
+    return this.docs
+        .filter(otherDoc => otherDoc.type === type && otherDoc.id !== docId)
+        .map(doc => {
+          return {
+            id: doc.id,
+            cosSimilarity: dot(givenDoc.embedding, doc.embedding)
+          }
+        })
+        .sort(({ cosSimilarity: s1 }, { cosSimilarity: s2 }) => descending(s1, s2))
+        .slice(0, n)
+  }
+
+  static async #toDoc(extDoc, i) {
     return {
       type: Library.getDocType(extDoc),
       id: Library.getId(extDoc),
@@ -67,7 +84,7 @@ class Library {
 
   static getDocType(doc) {
     assert('number' in doc && doc.title && doc.labels, 'doc must be a GitHub issue')
-    return docTypes.GITHUB_ISSUE
+    return this.docTypes.GITHUB_ISSUE
   }
 
   static getId(doc) {
@@ -76,7 +93,7 @@ class Library {
 
   static get ngramsPipelines() {
     return {
-      [docTypes.GITHUB_ISSUE]: [
+      [this.docTypes.GITHUB_ISSUE]: [
         issueTransformLabels,
         issueAddCommentTexts,
         issueToText,
@@ -90,13 +107,14 @@ class Library {
       ]
     }
   }
-}
 
-const docTypes = {
-  GITHUB_ISSUE: 1
+  static get docTypes() {
+    return {
+      GITHUB_ISSUE: 1
+    }
+  }
 }
 
 module.exports = {
-  Library,
-  ...docTypes
+  Library
 }

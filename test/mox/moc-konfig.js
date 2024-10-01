@@ -1,7 +1,7 @@
 const apiUrl = 'https://api.juhpuewqahtjLAKUZTE.com'
 const tokenUrl = 'https://token.sjfirwKJHRhjhj.com'
 const deploymentUrl = 'https://dep.sjfirwKJHRhjhj.com'
-const outputLength = 128
+const outputLength = 10
 
 jest.mock('../../data/.private/config.json', () => ({
   github: {
