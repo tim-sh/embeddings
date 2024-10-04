@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { completions } = require('../../../util/openai')
+const { complete } = require('../../../util/openai')
 const { writeFileSync } = require('node:fs')
 const { proj } = require('../../../util/fs')
 const { rndStr } = require('../../../util/format')
@@ -8,7 +8,7 @@ const { rndStr } = require('../../../util/format')
 const n = 10
 
 for (const [ref, label] of [['the same problem but phrased differently', 'same'], ['different problems', 'diff']]) {
-  completions(`
+  complete(`
     Think up ${n} different sample Github issues. It is important that they all refer to ${ref}.
     
     Make the bodies between 5 and 10 sentences long, with some technical terms or stack traces mixed in.

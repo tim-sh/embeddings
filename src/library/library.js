@@ -1,7 +1,7 @@
 const assert = require('node:assert')
 const TfIdf = require('natural').TfIdf
 
-const { tfIdf: { threshold } } = require('../../data/config')
+const { issues: { include }, tfIdf: { threshold } } = require('../../data/config')
 
 const { issueTransformLabels } = require('../pipeline/issue-transform-labels')
 const { issueAddCommentTexts } = require('../pipeline/issue-add-comment-texts')
@@ -14,7 +14,7 @@ const { runPipeline } = require('../pipeline/run-pipeline')
 const { tokensRemoveStopwords } = require('../pipeline/tokens-remove-stopwords')
 const { tokensToNgrams } = require('../pipeline/tokens-to-ngrams')
 const { textTransformLowercase } = require('../pipeline/text-transform-lowercase')
-const { embeddings } = require('../util/openai')
+const { embed } = require('../util/openai')
 const { meanArr, dot, descending } = require('../util/maths')
 
 class Library {
@@ -23,7 +23,12 @@ class Library {
   }
 
   async init(corpus) {
-    this.docs = await Promise.all(corpus.map((extDoc, i) => Library.#toDoc(extDoc, i)))
+    this.docs = await Promise.all(
+        corpus
+            .slice(0, include.latest)
+            .map((extDoc, i, { length }) => Library.#toDoc(extDoc, i))
+            .filter(Boolean)
+    )
     this.docs.forEach(doc => this.termFreqCalculator.addDocument(doc.ngrams))
     await this.#docsUpdated()
   }
@@ -74,12 +79,26 @@ class Library {
     // Normalize to [0,1]
     tfIdfs.forEach((tfIdf, ngram) => tfIdfs.set(ngram, (tfIdf - tfIdfMin) / (tfIdfMax - tfIdfMin)))
 
+    const embeddingsByNgrams = new Map()
+
     for (const doc of this.docs) {
       doc.tfIdfs = doc.ngrams.map(ngram => tfIdfs.get(ngram))
-      const relevantNgrams = doc.ngrams.filter((ngram, i) => doc.tfIdfs[i] >= threshold)
-      const ngEmbeddings = (await embeddings(relevantNgrams)).embeddings
-      doc.embedding = meanArr(ngEmbeddings)
+      doc.relevantNgrams = doc.ngrams.filter((ngram, i) => doc.tfIdfs[i] >= threshold)
+      doc.relevantNgrams.forEach(ngram => embeddingsByNgrams.set(ngram, null))
     }
+
+    const chunkSize = 2048
+    const embeddingsByNgramsArray = Array.from(embeddingsByNgrams.keys())
+    for (let i = 0; i < embeddingsByNgrams.size; i += chunkSize) {
+      const chunk = embeddingsByNgramsArray.slice(i, i + chunkSize)
+      const { embeddings } = await embed(chunk)
+      chunk.forEach((ngram, i) => embeddingsByNgrams.set(ngram, embeddings[i]))
+    }
+
+    this.docs.forEach(doc =>
+        doc.embedding = meanArr(doc.relevantNgrams.map(ngram => embeddingsByNgrams.get(ngram)))
+    )
+
   }
 
   static getDocType(doc) {
@@ -94,8 +113,8 @@ class Library {
   static get ngramsPipelines() {
     return {
       [this.docTypes.GITHUB_ISSUE]: [
-        issueTransformLabels,
-        issueAddCommentTexts,
+        include.labels && issueTransformLabels,
+        include.comments && issueAddCommentTexts,
         issueToText,
         textRemoveCodeDelimiters,
         textTransformStacksAndWhitespace,
@@ -105,6 +124,7 @@ class Library {
         tokensRemoveStopwords,
         tokensToNgrams
       ]
+          .filter(Boolean)
     }
   }
 

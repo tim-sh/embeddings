@@ -92,13 +92,18 @@ There are two places for config settings. Adjust them as needed before running t
 
 ## Known Issues
 
+- Tokens sent for embedding should be deduplicated.
+- Rate limiting is not handled.
 - Settings are currently local to this repo.
 - GitHub org is currently required.
 - OpenAI API version is currently fixed.
-- Maximum token count is currently ignored.
+- API input size limits are not handled.
 - Settings are missing to control:
   - whether labels are included in the text
   - the set of pipeline functions to use
   - the parameters of the pipeline functions
 - Cost calculation is missing.
 - The code is currently in-memory only.
+  - Fetched/computed data should be persisted.
+- It uses CJS modules.
+

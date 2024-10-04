@@ -3,6 +3,9 @@ function mean(arr) {
 }
 
 function meanArr(arrOfArr) {
+  if (!arrOfArr.length) {
+    return []
+  }
   const dim = arrOfArr[0].length
   return Array.from({ length: dim }, (_, i) => mean(arrOfArr.map(arr => arr[i])))
 }

@@ -3,7 +3,7 @@ function issueToText(issue) {
   if (issue.body) {
     text += '\n\n' + issue.body.trim()
   }
-  if (issue.comments.length) {
+  if (issue.comments?.length) {
     text += '\n\n' + issue.comments.map(c => c.trim()).join('\n')
   }
   return text + '\n'

@@ -2,7 +2,7 @@ const { proj } = require('./fs')
 const { models, credentials } = require(proj('data/.private/config.json'))
 const { getToken } = require('./auth')
 
-async function completions(message, {
+async function complete(message, {
   model = 'GPT_4O',
   systemPrompt,
   seed = 5330,     // increase determinism
@@ -42,7 +42,7 @@ async function completions(message, {
       })
 }
 
-async function embeddings(ngrams, {
+async function embed(ngrams, {
   model = 'EMBED_ADA_002'
 } = {}) {
 
@@ -56,7 +56,8 @@ async function embeddings(ngrams, {
       Authorization: `Bearer ${await getToken(credentials[credentialsKey])}`
     },
     body: JSON.stringify({
-      input: ngrams
+      input: ngrams,
+      model
     })
   })
       .then(async response => {
@@ -75,6 +76,6 @@ async function embeddings(ngrams, {
 }
 
 module.exports = {
-  completions,
-  embeddings
+  complete,
+  embed
 }
