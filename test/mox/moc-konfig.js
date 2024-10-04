@@ -29,13 +29,17 @@ jest.mock('../../data/.private/config.json', () => ({
 
 jest.mock('../../data/config', () => ({
   issues: {
-    relevantLabels: /me(wow)! (.*)/
+    relevantLabels: /me(owl)! (.*)/,
+    include: {
+      labels: false,
+      comments: false
+    }
   },
   stacks: {
     maxLen: 3
   },
   tfIdf: {
-    threshold: 0.2
+    threshold: 0.1
   }
 }))
 

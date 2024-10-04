@@ -5,11 +5,11 @@ describe('issue-transform-labels', () => {
   it('should transform labels into strings removing irrelevant entries', async () => {
     const issue = {
       labels: [
-        { name: 'mewow! foo' },
-        { name: 'mewow! bar' },
+        { name: 'meowl! foo' },
+        { name: 'meowl! bar' },
         { name: 'what else' },
         { name: 'cap lorem' },
-        { name: 'mewow! cds42' },
+        { name: 'meowl! cds42' },
       ],
       some: 'more',
       pro: 'perties'
@@ -18,7 +18,7 @@ describe('issue-transform-labels', () => {
 
     issueTransformLabels(issue)
 
-    expect(issue.labels).toEqual(['wow foo', 'wow bar', 'wow cds42'])
+    expect(issue.labels).toEqual(['owl foo', 'owl bar', 'owl cds42'])
 
     delete issue.labels
     delete originalIssue.labels
@@ -28,11 +28,11 @@ describe('issue-transform-labels', () => {
   it('should remove irrelevant entries', async () => {
     const issue = {
       labels: [
-          'mewow! foo',
-          'mewow! bar',
+          'meowl! foo',
+          'meowl! bar',
           'what else',
           'cap lorem',
-          'mewow! cds42'
+          'meowl! cds42'
       ],
       more: 'properties'
     }
@@ -40,7 +40,7 @@ describe('issue-transform-labels', () => {
 
     issueTransformLabels(issue)
 
-    expect(issue.labels).toEqual(['wow foo', 'wow bar', 'wow cds42'])
+    expect(issue.labels).toEqual(['owl foo', 'owl bar', 'owl cds42'])
 
     delete issue.labels
     delete originalIssue.labels

@@ -1,6 +1,10 @@
 module.exports = {
   issues: {
-    relevantLabels: /your regex/
+    relevantLabels: /your regex/,
+    include: {
+      labels: false,
+      comments: false
+    }
   },
   stacks: {
     maxLen: 10

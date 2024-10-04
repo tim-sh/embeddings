@@ -1,7 +1,7 @@
 const assert = require('node:assert')
 const TfIdf = require('natural').TfIdf
 
-const { tfIdf: { threshold } } = require('../../data/config')
+const { issues: { include }, tfIdf: { threshold } } = require('../../data/config')
 
 const { issueTransformLabels } = require('../pipeline/issue-transform-labels')
 const { issueAddCommentTexts } = require('../pipeline/issue-add-comment-texts')
@@ -23,7 +23,12 @@ class Library {
   }
 
   async init(corpus) {
-    this.docs = await Promise.all(corpus.map((extDoc, i) => Library.#toDoc(extDoc, i)))
+    this.docs = await Promise.all(
+        corpus
+            .slice(0, include.latest)
+            .map((extDoc, i, { length }) => Library.#toDoc(extDoc, i))
+            .filter(Boolean)
+    )
     this.docs.forEach(doc => this.termFreqCalculator.addDocument(doc.ngrams))
     await this.#docsUpdated()
   }
@@ -94,8 +99,8 @@ class Library {
   static get ngramsPipelines() {
     return {
       [this.docTypes.GITHUB_ISSUE]: [
-        issueTransformLabels,
-        issueAddCommentTexts,
+        include.labels && issueTransformLabels,
+        include.comments && issueAddCommentTexts,
         issueToText,
         textRemoveCodeDelimiters,
         textTransformStacksAndWhitespace,
@@ -105,6 +110,7 @@ class Library {
         tokensRemoveStopwords,
         tokensToNgrams
       ]
+          .filter(Boolean)
     }
   }
 
