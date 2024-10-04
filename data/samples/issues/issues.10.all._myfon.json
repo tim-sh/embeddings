@@ -1,0 +1,276 @@
+[
+  {
+    "number": 16352,
+    "title": "Unhandled exception in User Authentication module",
+    "labels": [
+      "User Authentication",
+      "Backend"
+    ],
+    "body": "We are encountering an unhandled exception in the User Authentication module. The error occurs when a user tries to log in with invalid credentials. The stack trace points to `AuthController.java:45`. This issue seems to be affecting multiple users and needs immediate attention. Here's a snippet of the stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This seems to be a null pointer issue.",
+      "We should add null checks to avoid this."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 3853,
+    "title": "NullPointerException in login function",
+    "labels": [
+      "Backend"
+    ],
+    "body": "A NullPointerException is thrown when users attempt to log in with incorrect credentials. The error is traced back to `AuthController.java` at line 45. This is causing the application to crash, and users are unable to proceed. The relevant stack trace is as follows:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This needs to be fixed ASAP.",
+      "Can we add a try-catch block here?",
+      "I will look into this."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 2634,
+    "title": "Login error causing application crash",
+    "labels": [
+      "User Authentication"
+    ],
+    "body": "The application crashes when users enter invalid login credentials. The issue is a NullPointerException in the `AuthController` class, specifically at line 45. This is a critical issue as it prevents users from accessing the application. Below is the stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This is a high-priority issue.",
+      "We need to handle null values properly."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 4758,
+    "title": "Crash on invalid login attempt",
+    "labels": [
+      "Backend",
+      "User Authentication"
+    ],
+    "body": "Our backend service crashes when a user tries to log in with invalid credentials. The stack trace indicates a NullPointerException at `AuthController.java:45`. This is causing significant disruption for users. Here's the stack trace for reference:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "Can someone verify this issue?",
+      "We should add a unit test for this scenario."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 5964,
+    "title": "Unhandled NullPointerException in AuthController",
+    "labels": [
+      "Backend"
+    ],
+    "body": "An unhandled NullPointerException is thrown in the `AuthController` class when users attempt to log in with invalid credentials. The error occurs at line 45 and causes the application to crash. This issue needs to be resolved urgently to prevent further user disruption. Stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This looks like a simple fix.",
+      "Can we add a null check here?"
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 6842,
+    "title": "Application crash on invalid login",
+    "labels": [
+      "User Authentication",
+      "Backend"
+    ],
+    "body": "The application crashes when a user tries to log in with invalid credentials. The issue is a NullPointerException in the `AuthController` class at line 45. This is causing significant user disruption. The stack trace is as follows:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "We need to fix this immediately.",
+      "Adding a null check should resolve this."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 7421,
+    "title": "NullPointerException in AuthController login method",
+    "labels": [
+      "Backend"
+    ],
+    "body": "A NullPointerException is thrown in the `AuthController` class when users attempt to log in with invalid credentials. The error occurs at line 45 and causes the application to crash. This is a critical issue that needs to be addressed immediately. Stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This is a critical bug.",
+      "We should add proper error handling."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 8234,
+    "title": "Crash on invalid credentials",
+    "labels": [
+      "User Authentication"
+    ],
+    "body": "The application crashes when users enter invalid login credentials. The issue is a NullPointerException in the `AuthController` class at line 45. This is causing significant disruption for users. Below is the stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This needs to be fixed ASAP.",
+      "Can we add a try-catch block here?"
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 9345,
+    "title": "Unhandled exception on login",
+    "labels": [
+      "Backend",
+      "User Authentication"
+    ],
+    "body": "An unhandled NullPointerException is thrown in the `AuthController` class when users attempt to log in with invalid credentials. The error occurs at line 45 and causes the application to crash. This issue needs to be resolved urgently to prevent further user disruption. Stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This looks like a simple fix.",
+      "Can we add a null check here?"
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 10456,
+    "title": "Login crash due to NullPointerException",
+    "labels": [
+      "User Authentication"
+    ],
+    "body": "The application crashes when a user tries to log in with invalid credentials. The issue is a NullPointerException in the `AuthController` class at line 45. This is causing significant user disruption. The stack trace is as follows:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "We need to fix this immediately.",
+      "Adding a null check should resolve this."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 16352,
+    "title": "NullPointerException in UserService",
+    "labels": [
+      "backend",
+      "UserService"
+    ],
+    "body": "We are encountering a NullPointerException in the UserService class when trying to fetch user details. The stack trace points to line 42 in UserService.java. This issue seems to occur intermittently and might be related to the user data being null. Here's a snippet of the stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.service.UserService.getUserDetails(UserService.java:42)\n```\nPlease investigate and provide a fix.",
+    "comments": [
+      "I've noticed this issue as well, especially when the user data is incomplete.",
+      "Can we add a null check before accessing the user details?"
+    ],
+    "kind": "diff"
+  },
+  {
+    "number": 3853,
+    "title": "Frontend rendering issue on Safari",
+    "labels": [
+      "frontend",
+      "Safari"
+    ],
+    "body": "The application UI is not rendering correctly on Safari browser. The issue seems to be with the CSS flexbox properties. Elements are overlapping and the layout is broken. This problem does not occur on Chrome or Firefox. We need to ensure cross-browser compatibility. Here is a screenshot of the issue:\n\n![screenshot](url-to-screenshot)",
+    "comments": [
+      "I can confirm this issue on Safari 14.0.",
+      "Could this be related to the vendor prefixes in our CSS?"
+    ],
+    "kind": "diff"
+  },
+  {
+    "number": 2634,
+    "title": "Database connection timeout",
+    "labels": [
+      "database"
+    ],
+    "body": "We are experiencing frequent database connection timeouts. The error log shows the following message:\n\n```\ncom.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure\n```\nThis is causing significant delays in data retrieval and affecting overall application performance. We need to investigate the root cause and optimize the database connection settings.",
+    "comments": [
+      "Could this be related to the network latency?",
+      "We might need to increase the connection pool size."
+    ],
+    "kind": "diff"
+  },
+  {
+    "number": 7485,
+    "title": "Memory leak in ImageProcessor",
+    "labels": [
+      "backend",
+      "ImageProcessor"
+    ],
+    "body": "There appears to be a memory leak in the ImageProcessor module. After processing a large number of images, the application memory usage spikes and does not decrease. This eventually leads to an OutOfMemoryError. The issue might be related to the way images are being handled in memory. Here's a relevant log entry:\n\n```\njava.lang.OutOfMemoryError: Java heap space\n```\nPlease investigate and resolve this memory leak.",
+    "comments": [
+      "This could be due to unclosed streams.",
+      "We should profile the memory usage to identify the leak."
+    ],
+    "kind": "diff"
+  },
+  {
+    "number": 5936,
+    "title": "API rate limiting issue",
+    "labels": [
+      "backend",
+      "API"
+    ],
+    "body": "Our API rate limiting is not functioning as expected. Users are able to make more requests than the defined limit. This is causing server overload and affecting performance. The rate limiting logic is implemented in the ApiRateLimiter class. We need to review and fix the rate limiting mechanism to ensure it adheres to the defined limits.",
+    "comments": [
+      "Could this be due to a misconfiguration in the rate limiter?",
+      "We should add more logging to track the rate limiting behavior."
+    ],
+    "kind": "diff"
+  },
+  {
+    "number": 8347,
+    "title": "Email notifications not being sent",
+    "labels": [
+      "backend",
+      "EmailService"
+    ],
+    "body": "Users are reporting that they are not receiving email notifications. The EmailService class is responsible for sending out these notifications. The logs do not show any errors, but the emails are not being delivered. We need to check the email server configuration and ensure that the EmailService is functioning correctly.",
+    "comments": [
+      "Could this be related to the email server being down?",
+      "We should verify the email server credentials."
+    ],
+    "kind": "diff"
+  },
+  {
+    "number": 2749,
+    "title": "Search functionality not returning results",
+    "labels": [
+      "frontend",
+      "Search"
+    ],
+    "body": "The search functionality on the website is not returning any results. This issue seems to have started after the recent update. The search query is being sent to the backend, but the response is empty. We need to debug the search endpoint and ensure that it is returning the correct results.",
+    "comments": [
+      "This might be related to the recent changes in the search algorithm.",
+      "We should add more logging to the search endpoint."
+    ],
+    "kind": "diff"
+  },
+  {
+    "number": 1058,
+    "title": "User profile image upload failing",
+    "labels": [
+      "frontend",
+      "UserProfile"
+    ],
+    "body": "Users are unable to upload profile images. The upload process fails with a 500 Internal Server Error. The issue seems to be with the file upload endpoint. We need to check the server logs and identify the root cause of this error. Here's a snippet of the error response:\n\n```\nHTTP/1.1 500 Internal Server Error\n```\nPlease investigate and fix this issue.",
+    "comments": [
+      "Could this be related to the file size limit?",
+      "We should check the server configuration for file uploads."
+    ],
+    "kind": "diff"
+  },
+  {
+    "number": 6790,
+    "title": "Payment gateway integration issue",
+    "labels": [
+      "backend",
+      "PaymentGateway"
+    ],
+    "body": "We are facing issues with the payment gateway integration. Users are reporting failed transactions and incorrect payment statuses. The PaymentGatewayService class handles the integration. We need to review the integration code and ensure that it is working correctly. Here's a relevant log entry:\n\n```\nERROR: Payment transaction failed\n```\nPlease investigate and resolve this issue.",
+    "comments": [
+      "Could this be related to the recent API changes by the payment provider?",
+      "We should add more error handling to the payment integration code."
+    ],
+    "kind": "diff"
+  },
+  {
+    "number": 4912,
+    "title": "Localization issues in the Spanish version",
+    "labels": [
+      "frontend",
+      "Localization"
+    ],
+    "body": "There are several localization issues in the Spanish version of the application. Some of the text is not translated correctly, and there are formatting issues with dates and numbers. We need to review the localization files and ensure that all text is translated correctly. Additionally, we should check the formatting settings for dates and numbers.",
+    "comments": [
+      "This might be related to missing translations in the localization files.",
+      "We should review the localization settings for the Spanish language."
+    ],
+    "kind": "diff"
+  }
+]
