@@ -56,7 +56,8 @@ async function embeddings(ngrams, {
       Authorization: `Bearer ${await getToken(credentials[credentialsKey])}`
     },
     body: JSON.stringify({
-      input: ngrams
+      input: ngrams,
+      model
     })
   })
       .then(async response => {
