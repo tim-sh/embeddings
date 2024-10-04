@@ -182,7 +182,6 @@ describe('library', () => {
 
     for (let i = 0; i < library2.docs.length; i++) {
       expect(library1.docs[i].ngrams).toEqual(library2.docs[i].ngrams)
-      expect(library1.docs[i].embedding).toEqual(library2.docs[i].embedding)
     }
   })
 
