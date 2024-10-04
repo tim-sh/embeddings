@@ -160,8 +160,8 @@ describe('library', () => {
       expect(doc.embedding).toHaveLength(outputLength)
       doc.embedding.forEach(value => {
         // components are in [-1, 1], since OpenAI embeddings are unit vectors
-        expect(value).toBeGreaterThanOrEqual(-1)
-        expect(value).toBeLessThanOrEqual(1)
+        expect(value.toNumber()).toBeGreaterThanOrEqual(-1)
+        expect(value.toNumber()).toBeLessThanOrEqual(1)
       })
     })
 
