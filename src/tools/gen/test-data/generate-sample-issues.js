@@ -6,12 +6,15 @@ const { proj } = require('../../../util/fs')
 const { rndStr } = require('../../../util/format')
 
 const n = 10
+const id = `_${rndStr(5)}`
 
-for (const [ref, label] of [['the same problem but phrased differently', 'same'], ['different problems', 'diff']]) {
-  complete(`
-    Think up ${n} different sample Github issues. It is important that they all refer to ${ref}.
+const allIssues = []
+
+for (const [ref, kind] of [['the same problem but phrased differently', 'same'], ['a different problem', 'diff']]) {
+  const message = `
+    Generate ${n} different sample Github issues each referring to ${ref}.
     
-    Make the bodies between 5 and 10 sentences long, with some technical terms or stack traces mixed in.
+    Make the body of each of the ${n} issues between 5 and 10 sentences long, with some technical terms or stack traces mixed in.
     Bodies may be multi-line and should strongly vary between issues while still keeping reference to the same problem.
     
     Also include in each issue:
@@ -20,34 +23,41 @@ for (const [ref, label] of [['the same problem but phrased differently', 'same']
         
     Each label should refer to a software component but not to a type of issue, urgency, or priority.
     
-    Use the following as an example and respond in JSON in the same format but with different values
+    Use the following output structure. Respond with a JSON object containing ${n} issues in total:
 
-    [
-      {
-        "number": 16352,
-        "title": "…",
-        "labels": [ "…", "…", "…" ],
-        "body": "…",
-        "comments": [ "…" ]
-      },
-      {
-        "number": 3853,
-        "title": "…",
-        "labels": [ "…", "…" ],
-        "body": "…",
-        "comments": [ "…", "…", "…" ]
-      },
-      {
-        "number": 2634,
-        "title": "…",
-        "labels": [ "…" ],
-        "body": "…",
-        "comments": [ "…", "…" ]
-      }
-    ]
-    
-    Remember to generate ${n} issues in total.
-  `).then(result =>
-        writeFileSync(proj(`data/samples/issues/issues.${n}.${label}._${rndStr(5)}.json`), JSON.stringify(JSON.parse(result.completion.trim()), null, 2), 'utf8')
-  )
+    {
+      "issues": [
+        {
+          "number": 16352,
+          "title": "…",
+          "labels": [ "…", "…", "…" ],
+          "body": "…",
+          "comments": [ "…" ]
+        },
+        {
+          "number": 3853,
+          "title": "…",
+          "labels": [ "…", "…" ],
+          "body": "…",
+          "comments": [ "…", "…", "…" ]
+        },
+        {
+          "number": 2634,
+          "title": "…",
+          "labels": [ "…" ],
+          "body": "…",
+          "comments": [ "…", "…" ]
+        }, // etc.
+      ]
+    }
+  `
+  complete(message)
+      .then(result => {
+        const issues = JSON.parse(result.completion.trim())
+            .issues
+            .map(issue => ({ ...issue, kind }))
+        allIssues.push(...issues)
+        return writeFileSync(proj(`data/samples/issues/issues.${n}.${kind}.${id}.json`), JSON.stringify(issues, null, 2), 'utf8')
+      })
+      .then(() => writeFileSync(proj(`data/samples/issues/issues.${n}.all.${id}.json`), JSON.stringify(allIssues, null, 2), 'utf8'))
 }

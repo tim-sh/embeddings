@@ -15,7 +15,7 @@ const { tokensRemoveStopwords } = require('../pipeline/tokens-remove-stopwords')
 const { tokensToNgrams } = require('../pipeline/tokens-to-ngrams')
 const { textTransformLowercase } = require('../pipeline/text-transform-lowercase')
 const { embed } = require('../util/openai')
-const { meanArr, dot, descending } = require('../util/maths')
+const { meanVec, dot, descending } = require('../util/maths')
 
 class Library {
   constructor() {
@@ -50,7 +50,7 @@ class Library {
         .map(doc => {
           return {
             id: doc.id,
-            cosSimilarity: dot(givenDoc.embedding, doc.embedding)
+            cosSimilarity: dot(givenDoc.catEmbedding, doc.catEmbedding).toNumber()
           }
         })
         .sort(({ cosSimilarity: s1 }, { cosSimilarity: s2 }) => descending(s1, s2))
@@ -95,9 +95,10 @@ class Library {
       chunk.forEach((ngram, i) => embeddingsByNgrams.set(ngram, embeddings[i]))
     }
 
-    this.docs.forEach(doc =>
-        doc.embedding = meanArr(doc.relevantNgrams.map(ngram => embeddingsByNgrams.get(ngram)))
-    )
+    for (const doc of this.docs) {
+      doc.catEmbedding = (await embed(doc.relevantNgrams.join(' '))).embeddings[0]
+      doc.embedding = meanVec(doc.relevantNgrams.map(ngram => embeddingsByNgrams.get(ngram)))
+    }
 
   }
 

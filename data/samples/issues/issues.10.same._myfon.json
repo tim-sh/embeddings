@@ -1,0 +1,137 @@
+[
+  {
+    "number": 16352,
+    "title": "Unhandled exception in User Authentication module",
+    "labels": [
+      "User Authentication",
+      "Backend"
+    ],
+    "body": "We are encountering an unhandled exception in the User Authentication module. The error occurs when a user tries to log in with invalid credentials. The stack trace points to `AuthController.java:45`. This issue seems to be affecting multiple users and needs immediate attention. Here's a snippet of the stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This seems to be a null pointer issue.",
+      "We should add null checks to avoid this."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 3853,
+    "title": "NullPointerException in login function",
+    "labels": [
+      "Backend"
+    ],
+    "body": "A NullPointerException is thrown when users attempt to log in with incorrect credentials. The error is traced back to `AuthController.java` at line 45. This is causing the application to crash, and users are unable to proceed. The relevant stack trace is as follows:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This needs to be fixed ASAP.",
+      "Can we add a try-catch block here?",
+      "I will look into this."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 2634,
+    "title": "Login error causing application crash",
+    "labels": [
+      "User Authentication"
+    ],
+    "body": "The application crashes when users enter invalid login credentials. The issue is a NullPointerException in the `AuthController` class, specifically at line 45. This is a critical issue as it prevents users from accessing the application. Below is the stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This is a high-priority issue.",
+      "We need to handle null values properly."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 4758,
+    "title": "Crash on invalid login attempt",
+    "labels": [
+      "Backend",
+      "User Authentication"
+    ],
+    "body": "Our backend service crashes when a user tries to log in with invalid credentials. The stack trace indicates a NullPointerException at `AuthController.java:45`. This is causing significant disruption for users. Here's the stack trace for reference:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "Can someone verify this issue?",
+      "We should add a unit test for this scenario."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 5964,
+    "title": "Unhandled NullPointerException in AuthController",
+    "labels": [
+      "Backend"
+    ],
+    "body": "An unhandled NullPointerException is thrown in the `AuthController` class when users attempt to log in with invalid credentials. The error occurs at line 45 and causes the application to crash. This issue needs to be resolved urgently to prevent further user disruption. Stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This looks like a simple fix.",
+      "Can we add a null check here?"
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 6842,
+    "title": "Application crash on invalid login",
+    "labels": [
+      "User Authentication",
+      "Backend"
+    ],
+    "body": "The application crashes when a user tries to log in with invalid credentials. The issue is a NullPointerException in the `AuthController` class at line 45. This is causing significant user disruption. The stack trace is as follows:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "We need to fix this immediately.",
+      "Adding a null check should resolve this."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 7421,
+    "title": "NullPointerException in AuthController login method",
+    "labels": [
+      "Backend"
+    ],
+    "body": "A NullPointerException is thrown in the `AuthController` class when users attempt to log in with invalid credentials. The error occurs at line 45 and causes the application to crash. This is a critical issue that needs to be addressed immediately. Stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This is a critical bug.",
+      "We should add proper error handling."
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 8234,
+    "title": "Crash on invalid credentials",
+    "labels": [
+      "User Authentication"
+    ],
+    "body": "The application crashes when users enter invalid login credentials. The issue is a NullPointerException in the `AuthController` class at line 45. This is causing significant disruption for users. Below is the stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This needs to be fixed ASAP.",
+      "Can we add a try-catch block here?"
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 9345,
+    "title": "Unhandled exception on login",
+    "labels": [
+      "Backend",
+      "User Authentication"
+    ],
+    "body": "An unhandled NullPointerException is thrown in the `AuthController` class when users attempt to log in with invalid credentials. The error occurs at line 45 and causes the application to crash. This issue needs to be resolved urgently to prevent further user disruption. Stack trace:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "This looks like a simple fix.",
+      "Can we add a null check here?"
+    ],
+    "kind": "same"
+  },
+  {
+    "number": 10456,
+    "title": "Login crash due to NullPointerException",
+    "labels": [
+      "User Authentication"
+    ],
+    "body": "The application crashes when a user tries to log in with invalid credentials. The issue is a NullPointerException in the `AuthController` class at line 45. This is causing significant user disruption. The stack trace is as follows:\n\n```\njava.lang.NullPointerException\n\tat com.example.auth.AuthController.login(AuthController.java:45)\n```",
+    "comments": [
+      "We need to fix this immediately.",
+      "Adding a null check should resolve this."
+    ],
+    "kind": "same"
+  }
+]

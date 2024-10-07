@@ -22,6 +22,10 @@ async function main() {
   }
 
   const mostSimilarDocs = library.getMostSimilarDocs(queryDocId, parseInt(nSimilarStr))
+      .map(sim => {
+        const { kind } = docs.find(doc => doc.number === sim.id)
+        return { ...sim, kind }
+      })
   console.dir(mostSimilarDocs, { depth: null })
 }
 

@@ -1,6 +1,8 @@
 const { proj } = require('./fs')
-const { models, credentials } = require(proj('data/.private/config.json'))
 const { getToken } = require('./auth')
+const { vec, normalize } = require('./maths')
+
+const { models, credentials } = require(proj('data/.private/config.json'))
 
 async function complete(message, {
   model = 'GPT_4O',
@@ -42,7 +44,7 @@ async function complete(message, {
       })
 }
 
-async function embed(ngrams, {
+async function embed(stringOrStrArr, {
   model = 'EMBED_ADA_002'
 } = {}) {
 
@@ -56,7 +58,7 @@ async function embed(ngrams, {
       Authorization: `Bearer ${await getToken(credentials[credentialsKey])}`
     },
     body: JSON.stringify({
-      input: ngrams,
+      input: stringOrStrArr,
       model
     })
   })
@@ -66,7 +68,7 @@ async function embed(ngrams, {
           throw new Error(json.error.message)
         }
         const { data, usage: { total_tokens } } = json
-        const embeddings = data.map(d => d.embedding)
+        const embeddings = data.map(d => normalize(vec(d.embedding)))
         const costs = total_tokens * costPerToken
         return {
           embeddings,
