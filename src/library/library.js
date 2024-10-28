@@ -105,16 +105,27 @@ class Library {
       doc.relevantNgrams.forEach(ngram => embeddingsByNgrams.set(ngram, null))
     }
 
+    // Embed n-grams individually
+
     const chunkSize = 2048
-    const embeddingsByNgramsArray = Array.from(embeddingsByNgrams.keys())
+    const ngrams = Array.from(embeddingsByNgrams.keys())
     for (let i = 0; i < embeddingsByNgrams.size; i += chunkSize) {
-      const chunk = embeddingsByNgramsArray.slice(i, i + chunkSize)
-      const { embeddings } = await embed(chunk)
-      chunk.forEach((ngram, i) => embeddingsByNgrams.set(ngram, embeddings[i]))
+      const ngramsChunk = ngrams.slice(i, i + chunkSize)
+      const { embeddings } = await embed(ngramsChunk)
+          .catch(err => {
+            const causingDocs = this.docs.filter(doc => doc.relevantNgrams.some(ngram => ngramsChunk.includes(ngram)))
+            throw new Error(`Failed to embed ngrams for docs ${causingDocs.map(doc => doc.id).join(', ')}: ${err}`)
+          })
+      ngramsChunk.forEach((ngram, i) => embeddingsByNgrams.set(ngram, embeddings[i]))
     }
 
+    // Embed concatenated n-grams
+
     for (const doc of this.docs) {
-      doc.catEmbedding = (await embed(doc.relevantNgrams.join(' '))).embeddings[0]
+      doc.catEmbedding = (await embed(doc.relevantNgrams.join(' '))
+          .catch(err => {
+            throw new Error(`Failed to embed concatenated ngrams for doc ${doc.id}: ${err}`)
+          })).embeddings[0]
       doc.embedding = meanVec(doc.relevantNgrams.map(ngram => embeddingsByNgrams.get(ngram)))
     }
 
