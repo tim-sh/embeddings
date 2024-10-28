@@ -85,14 +85,23 @@ class Library {
 
     const tfIdfMin = Math.min(...tfIdfs.values())
     const tfIdfMax = Math.max(...tfIdfs.values())
-    // Normalize to [0,1]
+
+    // Normalize TF-IDF scores
+
     tfIdfs.forEach((tfIdf, ngram) => tfIdfs.set(ngram, (tfIdf - tfIdfMin) / (tfIdfMax - tfIdfMin)))
 
     const embeddingsByNgrams = new Map()
 
     for (const doc of this.docs) {
       doc.tfIdfs = doc.ngrams.map(ngram => tfIdfs.get(ngram))
-      doc.relevantNgrams = doc.ngrams.filter((ngram, i) => doc.tfIdfs[i] >= threshold)
+      let thr = threshold
+      do {
+        doc.relevantNgrams = doc.ngrams.filter((ngram, i) => doc.tfIdfs[i] >= thr)
+      } while (doc.relevantNgrams.length === 0 && (thr -= 0.01) > 0)
+      if (doc.relevantNgrams.length === 0) {
+        throw new Error(`No relevant n-grams found for doc ${doc.id}`)
+      }
+      doc.ngramThreshold = thr
       doc.relevantNgrams.forEach(ngram => embeddingsByNgrams.set(ngram, null))
     }
 
