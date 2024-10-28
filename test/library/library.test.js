@@ -1,6 +1,6 @@
 const { apiUrl, tokenUrl, deploymentUrl, outputLength } = require('../mox/moc-konfig')
 
-const { Library } = require('../../src/library/library')
+const { Library } = require('../../src/doc-manager/library')
 
 describe('library', () => {
 

@@ -16,7 +16,7 @@ async function main() {
     docs = docs.filter(doc => doc.number === queryDocId || baseDocIds.includes(doc.number.toString()))
   }
 
-  const { Library } = require('../../library/library')
+  const { Library } = require('../../doc-manager/library')
   const library = new Library()
   await library.init(docs)
 
