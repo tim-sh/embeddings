@@ -40,18 +40,27 @@ class Library {
     await this.#docsUpdated()
   }
 
-  getMostSimilarDocs(docId, n = 1, type = Library.docTypes.GITHUB_ISSUE) {
-    const givenDoc = this.docs.find(doc => doc.type === type && doc.id === docId)
-    if (!givenDoc) {
-      return null
+  getMostSimilarDocs(qDocId, n = 1, type = Library.docTypes.GITHUB_ISSUE) {
+    const qDoc = this.docs.find(doc => doc.type === type && doc.id === qDocId)
+    if (!qDoc) {
+      throw new Error(`Query doc ${qDocId} not found`)
     }
     return this.docs
-        .filter(otherDoc => otherDoc.type === type && otherDoc.id !== docId)
+        .filter(doc => doc.type === type && doc.id !== qDocId)
         .map(doc => {
-          return {
+          return ({
             id: doc.id,
-            cosSimilarity: dot(givenDoc.catEmbedding, doc.catEmbedding).toNumber()
-          }
+            cosSimilarity: dot(qDoc.catEmbedding, doc.catEmbedding).toNumber(),
+            cosSimilarityMean: dot(qDoc.embedding, doc.embedding).toNumber(),
+            relevantNgrams: {
+              query: qDoc.relevantNgrams,
+              doc: doc.relevantNgrams
+            },
+            ngramThresholds: {
+              query: qDoc.ngramThreshold,
+              doc: doc.ngramThreshold
+            }
+          })
         })
         .sort(({ cosSimilarity: s1 }, { cosSimilarity: s2 }) => descending(s1, s2))
         .slice(0, n)
