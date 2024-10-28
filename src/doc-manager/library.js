@@ -25,8 +25,7 @@ class Library {
   async init(corpus) {
     this.docs = await Promise.all(
         corpus
-            .slice(0, include.latest)
-            .map((extDoc, i, { length }) => Library.#toDoc(extDoc, i))
+            .map((extDoc, i) => Library.#toDoc(extDoc, i))
             .filter(Boolean)
     )
     this.docs.forEach(doc => this.termFreqCalculator.addDocument(doc.ngrams))
