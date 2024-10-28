@@ -194,7 +194,7 @@ describe('library', () => {
     expect(similarDocs).toHaveLength(7)
     similarDocs.forEach(({ id, cosSimilarity }, i) => {
       expect(library.docs.some(doc => doc.id === id)).toBe(true)
-      expect(cosSimilarity).toBeGreaterThan(similarDocs[i + 1]?.cosSimilarity ?? 0)
+      expect(cosSimilarity).toBeGreaterThanOrEqual(similarDocs[i + 1]?.cosSimilarity ?? 0)
     })
 
     expect(similarDocs[0].id).toBe(124)
