@@ -67,7 +67,7 @@ function minus(vec, wec) {
  * @return {Decimal} - Result of raising the number to the exponent
  */
 function exp(a, exp) {
-  let result = new Decimal(a)
+  let result = a
   for (let i = 1; i < exp; i++) {
     result = result.mul(a)
   }

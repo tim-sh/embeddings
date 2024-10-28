@@ -34,7 +34,7 @@ describe('maths', () => {
 
   describe('length', () => {
     it('calculates the length of a vector', () => {
-      expect(length([3, 4]).toNumber()).toBe(5)
+      expect(length(vec([3, 4])).toNumber()).toBe(5)
     })
   })
 
