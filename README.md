@@ -93,6 +93,9 @@ There are two places for config settings. Adjust them as needed before running t
 ## Known Issues
 
 - Tokens sent for embedding should be deduplicated.
+- Embedding sometimes fails because of the input size limit:
+  - n-grams should be sorted by TF-IDF and the top n-grams should be sent for embedding
+    (maximizing the number of n-grams while staying below the input size limit).
 - Rate limiting is not handled.
 - Settings are currently local to this repo.
 - GitHub org is currently required.
