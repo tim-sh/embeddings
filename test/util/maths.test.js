@@ -1,23 +1,50 @@
+const Decimal = require('decimal.js')
+const { vec, arr, mean, meanVec, dot, minus, exp, length, normalize } = require('../../src/util/maths')
+
 describe('maths', () => {
   describe('mean', () => {
     it('calculates the mean of an array', () => {
-      const { mean } = require('../../src/util/maths')
-      expect(mean([1, 2, 3])).toBe(2)
+      expect(mean(vec([1, 2, 3])).toNumber()).toBe(2)
     })
   })
 
-  describe('meanArr', () => {
+  describe('meanVec', () => {
     it('calculates the mean of an array of arrays', () => {
-      const { meanArr } = require('../../src/util/maths')
-      expect(meanArr([[1, 2], [3, 4], [5, 6]])).toEqual([3, 4])
+      expect(arr(meanVec([vec([1, 2]), vec([3, 4]), vec([5, 6])]))).toEqual([3, 4])
     })
   })
 
   describe('dot', () => {
     it('calculates the dot product of two arrays', () => {
-      const { dot } = require('../../src/util/maths')
-      expect(dot([1, 2, 3], [4, 5, 6])).toBe(32)
+      expect(dot(vec([1, 2, 3]), vec([4, 5, 6])).toNumber()).toBe(32)
     })
   })
-})
 
+  describe('minus', () => {
+    it('subtracts two arrays', () => {
+      expect(arr(minus(vec([1, 2, 3]), vec([4, 5, 6])))).toEqual([-3, -3, -3])
+    })
+  })
+
+  describe('exp', () => {
+    it('calculates the exponent of a number', () => {
+      expect(exp(new Decimal(2), 3).toNumber()).toBe(8)
+    })
+  })
+
+  describe('length', () => {
+    it('calculates the length of a vector', () => {
+      expect(length(vec([3, 4])).toNumber()).toBe(5)
+    })
+  })
+
+  it('normalize', () => {
+    const a = normalize(vec(Array.from({ length: 1536 }, () => Math.random())))
+    const theta = 1e-6, c = Math.cos(theta), s = Math.sin(theta)
+    let b = [...a]
+    b[0] = a[0].mul(c).sub(a[1].mul(s))
+    b[1] = a[0].mul(s).add(a[1].mul(c))
+    expect(dot(a, b).toNumber()).toBeGreaterThan(c) // angle between a and b is less than theta
+  })
+
+})

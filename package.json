@@ -2,6 +2,11 @@
   "name": "embeddings",
   "private": true,
   "type": "commonjs",
+  "dependencies": {
+    "decimal.js": "^10.4.3",
+    "natural": "^8.0.1",
+    "stopword": "^3.1.1"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.13",
     "fetch-mock": "^11.1.5",
@@ -15,9 +20,5 @@
     "testMatch": [
       "**/*.test.js"
     ]
-  },
-  "dependencies": {
-    "natural": "^8.0.1",
-    "stopword": "^3.1.1"
   }
 }

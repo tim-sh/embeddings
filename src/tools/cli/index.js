@@ -4,24 +4,27 @@ async function main() {
   const { resolve } = require('node:path')
   const assert = require('node:assert')
 
-  const [, , docsJsonPath, queryDocJsonPathOrId, nSimilarStr = '10'] = process.argv
+  const [, , docsJsonPath, nSimilarStr , queryDocIdStr, ...baseDocIds] = process.argv
   assert(docsJsonPath, 'Missing docsJsonPath')
-  assert(queryDocJsonPathOrId, 'Missing queryDocJsonPathOrId')
+  assert(nSimilarStr, 'Missing nSimilarStr')
+  assert(queryDocIdStr, 'Missing queryDocIdStr')
 
-  const docs = require(resolve(docsJsonPath))
+  const queryDocId = parseInt(queryDocIdStr)
+
+  let docs = require(resolve(docsJsonPath))
+  if (baseDocIds.length) {
+    docs = docs.filter(doc => doc.number === queryDocId || baseDocIds.includes(doc.number.toString()))
+  }
 
   const { Library } = require('../../library/library')
   const library = new Library()
   await library.init(docs)
 
-  let queryDocId = parseInt(queryDocJsonPathOrId)
-  if (isNaN(queryDocId)) {
-    const queryDoc = require(resolve(queryDocJsonPathOrId))
-    await library.addDoc(queryDoc)
-    queryDocId = queryDoc.number
-  }
-
   const mostSimilarDocs = library.getMostSimilarDocs(queryDocId, parseInt(nSimilarStr))
+      .map(sim => {
+        const { kind } = docs.find(doc => doc.number === sim.id)
+        return { ...sim, kind }
+      })
   console.dir(mostSimilarDocs, { depth: null })
 }
 

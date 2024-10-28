@@ -90,9 +90,22 @@ There are two places for config settings. Adjust them as needed before running t
   - ⚠️ **Do not check in your actual settings** (e.g. in a fork)! Run `git update-index --assume-unchanged data/.private/config.json` to prevent accidental check-ins.
 - [data/config.js](data/config.js). This file is checked in and holds public settings.
 
+## Notes on Precision
+
+The following measures are taken to potentially improve precision. Numbers are order-of-magnitude from a quick exemplary run.
+
+| Measure                         | Relative Difference in Cosine Similarity |
+|---------------------------------|------------------------------------------|
+| Use Decimal.js for calculations | 1E-15                                    |
+| Re-normalize embeddings         | 1E-8                                     |
+
+
 ## Known Issues
 
 - Tokens sent for embedding should be deduplicated.
+- Embedding sometimes fails because of the input size limit:
+  - n-grams should be sorted by TF-IDF and the top n-grams should be sent for embedding
+    (maximizing the number of n-grams while staying below the input size limit).
 - Rate limiting is not handled.
 - Settings are currently local to this repo.
 - GitHub org is currently required.

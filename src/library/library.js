@@ -15,7 +15,7 @@ const { tokensRemoveStopwords } = require('../pipeline/tokens-remove-stopwords')
 const { tokensToNgrams } = require('../pipeline/tokens-to-ngrams')
 const { textTransformLowercase } = require('../pipeline/text-transform-lowercase')
 const { embed } = require('../util/openai')
-const { meanArr, dot, descending } = require('../util/maths')
+const { meanVec, dot, descending } = require('../util/maths')
 
 class Library {
   constructor() {
@@ -40,18 +40,27 @@ class Library {
     await this.#docsUpdated()
   }
 
-  getMostSimilarDocs(docId, n = 1, type = Library.docTypes.GITHUB_ISSUE) {
-    const givenDoc = this.docs.find(doc => doc.type === type && doc.id === docId)
-    if (!givenDoc) {
-      return null
+  getMostSimilarDocs(qDocId, n = 1, type = Library.docTypes.GITHUB_ISSUE) {
+    const qDoc = this.docs.find(doc => doc.type === type && doc.id === qDocId)
+    if (!qDoc) {
+      throw new Error(`Query doc ${qDocId} not found`)
     }
     return this.docs
-        .filter(otherDoc => otherDoc.type === type && otherDoc.id !== docId)
+        .filter(doc => doc.type === type && doc.id !== qDocId)
         .map(doc => {
-          return {
+          return ({
             id: doc.id,
-            cosSimilarity: dot(givenDoc.embedding, doc.embedding)
-          }
+            cosSimilarity: dot(qDoc.catEmbedding, doc.catEmbedding).toNumber(),
+            cosSimilarityMean: dot(qDoc.embedding, doc.embedding).toNumber(),
+            relevantNgrams: {
+              query: qDoc.relevantNgrams,
+              doc: doc.relevantNgrams
+            },
+            ngramThresholds: {
+              query: qDoc.ngramThreshold,
+              doc: doc.ngramThreshold
+            }
+          })
         })
         .sort(({ cosSimilarity: s1 }, { cosSimilarity: s2 }) => descending(s1, s2))
         .slice(0, n)
@@ -76,28 +85,49 @@ class Library {
 
     const tfIdfMin = Math.min(...tfIdfs.values())
     const tfIdfMax = Math.max(...tfIdfs.values())
-    // Normalize to [0,1]
+
+    // Normalize TF-IDF scores
+
     tfIdfs.forEach((tfIdf, ngram) => tfIdfs.set(ngram, (tfIdf - tfIdfMin) / (tfIdfMax - tfIdfMin)))
 
     const embeddingsByNgrams = new Map()
 
     for (const doc of this.docs) {
       doc.tfIdfs = doc.ngrams.map(ngram => tfIdfs.get(ngram))
-      doc.relevantNgrams = doc.ngrams.filter((ngram, i) => doc.tfIdfs[i] >= threshold)
+      let thr = threshold
+      do {
+        doc.relevantNgrams = doc.ngrams.filter((ngram, i) => doc.tfIdfs[i] >= thr)
+      } while (doc.relevantNgrams.length === 0 && (thr -= 0.01) > 0)
+      if (doc.relevantNgrams.length === 0) {
+        throw new Error(`No relevant n-grams found for doc ${doc.id}`)
+      }
+      doc.ngramThreshold = thr
       doc.relevantNgrams.forEach(ngram => embeddingsByNgrams.set(ngram, null))
     }
 
+    // Embed n-grams individually
+
     const chunkSize = 2048
-    const embeddingsByNgramsArray = Array.from(embeddingsByNgrams.keys())
+    const ngrams = Array.from(embeddingsByNgrams.keys())
     for (let i = 0; i < embeddingsByNgrams.size; i += chunkSize) {
-      const chunk = embeddingsByNgramsArray.slice(i, i + chunkSize)
-      const { embeddings } = await embed(chunk)
-      chunk.forEach((ngram, i) => embeddingsByNgrams.set(ngram, embeddings[i]))
+      const ngramsChunk = ngrams.slice(i, i + chunkSize)
+      const { embeddings } = await embed(ngramsChunk)
+          .catch(err => {
+            const causingDocs = this.docs.filter(doc => doc.relevantNgrams.some(ngram => ngramsChunk.includes(ngram)))
+            throw new Error(`Failed to embed ngrams for docs ${causingDocs.map(doc => doc.id).join(', ')}: ${err}`)
+          })
+      ngramsChunk.forEach((ngram, i) => embeddingsByNgrams.set(ngram, embeddings[i]))
     }
 
-    this.docs.forEach(doc =>
-        doc.embedding = meanArr(doc.relevantNgrams.map(ngram => embeddingsByNgrams.get(ngram)))
-    )
+    // Embed concatenated n-grams
+
+    for (const doc of this.docs) {
+      doc.catEmbedding = (await embed(doc.relevantNgrams.join(' '))
+          .catch(err => {
+            throw new Error(`Failed to embed concatenated ngrams for doc ${doc.id}: ${err}`)
+          })).embeddings[0]
+      doc.embedding = meanVec(doc.relevantNgrams.map(ngram => embeddingsByNgrams.get(ngram)))
+    }
 
   }
 

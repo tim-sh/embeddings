@@ -160,8 +160,8 @@ describe('library', () => {
       expect(doc.embedding).toHaveLength(outputLength)
       doc.embedding.forEach(value => {
         // components are in [-1, 1], since OpenAI embeddings are unit vectors
-        expect(value).toBeGreaterThanOrEqual(-1)
-        expect(value).toBeLessThanOrEqual(1)
+        expect(value.toNumber()).toBeGreaterThanOrEqual(-1)
+        expect(value.toNumber()).toBeLessThanOrEqual(1)
       })
     })
 
@@ -194,7 +194,7 @@ describe('library', () => {
     expect(similarDocs).toHaveLength(7)
     similarDocs.forEach(({ id, cosSimilarity }, i) => {
       expect(library.docs.some(doc => doc.id === id)).toBe(true)
-      expect(cosSimilarity).toBeGreaterThan(similarDocs[i + 1]?.cosSimilarity ?? 0)
+      expect(cosSimilarity).toBeGreaterThanOrEqual(similarDocs[i + 1]?.cosSimilarity ?? 0)
     })
 
     expect(similarDocs[0].id).toBe(124)
