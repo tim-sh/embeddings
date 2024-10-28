@@ -102,21 +102,14 @@ The following measures are taken to potentially improve precision. Numbers are o
 
 ## Known Issues
 
-- Tokens sent for embedding should be deduplicated.
-- Embedding sometimes fails because of the input size limit:
-  - n-grams should be sorted by TF-IDF and the top n-grams should be sent for embedding
-    (maximizing the number of n-grams while staying below the input size limit).
-- Rate limiting is not handled.
+- Tokens sent for embedding are not deduplicated. (BLI)
+- Embedding sometimes fails because of the input size limit. (BLI)
+- Rate limiting is not handled. (BLI)
 - Settings are currently local to this repo.
 - GitHub org is currently required.
 - OpenAI API version is currently fixed.
-- API input size limits are not handled.
 - Settings are missing to control:
-  - whether labels are included in the text
-  - the set of pipeline functions to use
-  - the parameters of the pipeline functions
-- Cost calculation is missing.
-- The code is currently in-memory only.
-  - Fetched/computed data should be persisted.
+  - the parameters of the pipeline functions (BLI)
+- Cost calculation is missing. (BLI)
+- The code is currently in-memory only. Embeddings are re-computed on every run. (BLI)
 - It uses CJS modules.
-
