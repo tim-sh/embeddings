@@ -1,31 +1,21 @@
-const assert = require('node:assert')
 const TfIdf = require('natural').TfIdf
 
-const { issues: { include }, tfIdf: { threshold } } = require('../../data/config')
-
-const { issueTransformLabels } = require('../pipeline/issue-transform-labels')
-const { issueAddCommentTexts } = require('../pipeline/issue-add-comment-texts')
-const { issueToText } = require('../pipeline/issue-to-text')
-const { textRemoveCodeDelimiters } = require('../pipeline/text-remove-code-delimiters')
-const { textTransformStacksAndWhitespace } = require('../pipeline/text-transform-stacks-and-whitespace')
-const { textTransformPaths } = require('../pipeline/text-transform-paths')
-const { textToTokens } = require('../pipeline/text-to-tokens')
+const { tfIdf: { threshold } } = require('../../data/config')
 const { runPipeline } = require('../pipeline/run-pipeline')
-const { tokensRemoveStopwords } = require('../pipeline/tokens-remove-stopwords')
-const { tokensToNgrams } = require('../pipeline/tokens-to-ngrams')
-const { textTransformLowercase } = require('../pipeline/text-transform-lowercase')
 const { embed } = require('../util/openai')
 const { meanVec, dot, descending } = require('../util/maths')
+const { types: { GITHUB_ISSUE }, getDocType, getId } = require('./docs')
 
 class Library {
   constructor() {
     this.termFreqCalculator = new TfIdf()
   }
 
-  async init(corpus) {
+  async init(corpus, pipeline) {
+    this.pipeline = pipeline
     this.docs = await Promise.all(
         corpus
-            .map((extDoc, i) => Library.#toDoc(extDoc, i))
+            .map((extDoc, i) => this.#toDoc(extDoc, i))
             .filter(Boolean)
     )
     this.docs.forEach(doc => this.termFreqCalculator.addDocument(doc.ngrams))
@@ -33,13 +23,13 @@ class Library {
   }
 
   async addDoc(extDoc) {
-    const doc = await Library.#toDoc(extDoc, this.docs.length)
+    const doc = await this.#toDoc(extDoc, this.docs.length)
     this.docs.push(doc)
     this.termFreqCalculator.addDocument(doc.ngrams)
     await this.#docsUpdated()
   }
 
-  getMostSimilarDocs(qDocId, n = 1, type = Library.docTypes.GITHUB_ISSUE) {
+  getMostSimilarDocs(qDocId, n = 1, type = GITHUB_ISSUE.type) {
     const qDoc = this.docs.find(doc => doc.type === type && doc.id === qDocId)
     if (!qDoc) {
       throw new Error(`Query doc ${qDocId} not found`)
@@ -65,12 +55,12 @@ class Library {
         .slice(0, n)
   }
 
-  static async #toDoc(extDoc, i) {
+  async #toDoc(extDoc, i) {
     return {
-      type: Library.getDocType(extDoc),
-      id: Library.getId(extDoc),
+      type: getDocType(extDoc),
+      id: getId(extDoc),
       i,
-      ngrams: (await runPipeline(Library.ngramsPipelines[Library.getDocType(extDoc)], extDoc))
+      ngrams: (await runPipeline(this.pipeline, extDoc))
           .filter(Boolean)
           .flat()
     }
@@ -126,40 +116,6 @@ class Library {
             throw new Error(`Failed to embed concatenated ngrams for doc ${doc.id}: ${err}`)
           })).embeddings[0]
       doc.embedding = meanVec(doc.relevantNgrams.map(ngram => embeddingsByNgrams.get(ngram)))
-    }
-
-  }
-
-  static getDocType(doc) {
-    assert('number' in doc && doc.title && doc.labels, 'doc must be a GitHub issue')
-    return this.docTypes.GITHUB_ISSUE
-  }
-
-  static getId(doc) {
-    return doc.number
-  }
-
-  static get ngramsPipelines() {
-    return {
-      [this.docTypes.GITHUB_ISSUE]: [
-        include.labels && issueTransformLabels,
-        include.comments && issueAddCommentTexts,
-        issueToText,
-        textRemoveCodeDelimiters,
-        textTransformStacksAndWhitespace,
-        textTransformPaths,
-        textTransformLowercase,
-        textToTokens,
-        tokensRemoveStopwords,
-        tokensToNgrams
-      ]
-          .filter(Boolean)
-    }
-  }
-
-  static get docTypes() {
-    return {
-      GITHUB_ISSUE: 1
     }
   }
 }

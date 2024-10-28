@@ -67,7 +67,7 @@ const corpus = [
   }
 ]
 
-const Library = require('src/doc-manager/library')
+const Library = require('src/docs/library')
 const library = new Library()
 await library.init(corpus)
 

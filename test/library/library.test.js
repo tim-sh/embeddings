@@ -1,6 +1,7 @@
 const { apiUrl, tokenUrl, deploymentUrl, outputLength } = require('../mox/moc-konfig')
 
-const { Library } = require('../../src/doc-manager/library')
+const { Library } = require('../../src/docs/library')
+const pipeline = require('../../src/pipeline')
 
 describe('library', () => {
 
@@ -145,7 +146,7 @@ describe('library', () => {
 
   it('computes n-grams, TF-IDFs and mean embedding for each document', async () => {
     const library = new Library()
-    await library.init(corpus)
+    await library.init(corpus, pipeline.default.GITHUB_ISSUE)
 
     expect(library.docs.length).toBe(12)
 
@@ -171,12 +172,12 @@ describe('library', () => {
 
   it('adds a doc', async () => {
     const library1 = new Library()
-    await library1.init(corpus.slice(0, 11))
+    await library1.init(corpus.slice(0, 11), pipeline.default.GITHUB_ISSUE)
 
     await library1.addDoc(corpus[11])
 
     const library2 = new Library()
-    await library2.init(corpus)
+    await library2.init(corpus, pipeline.default.GITHUB_ISSUE)
 
     expect(library1.docs.length).toBe(library2.docs.length)
 
@@ -187,7 +188,7 @@ describe('library', () => {
 
   it('gets most similar doc', async () => {
     const library = new Library()
-    await library.init(corpus)
+    await library.init(corpus, pipeline.default.GITHUB_ISSUE)
 
     const similarDocs = library.getMostSimilarDocs(123, 7)
 
