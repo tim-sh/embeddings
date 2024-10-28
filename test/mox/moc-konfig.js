@@ -28,7 +28,7 @@ jest.mock('../../data/.private/config.json', () => ({
 }))
 
 jest.mock('../../data/config', () => ({
-  issues: {
+  GITHUB_ISSUE: {
     relevantLabels: /me(owl)! (.*)/,
     include: {
       labels: false,

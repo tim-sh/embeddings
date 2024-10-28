@@ -1,6 +1,4 @@
-const { issues } = require('../../data/config')
-
-const { types: { GITHUB_ISSUE } } = require('../docs/docs')
+const { GITHUB_ISSUE } = require('../../data/config')
 
 const { issueTransformLabels } = require('../pipeline/issue-transform-labels')
 const { issueAddCommentTexts } = require('../pipeline/issue-add-comment-texts')
@@ -16,8 +14,8 @@ const { tokensToNgrams } = require('../pipeline/tokens-to-ngrams')
 module.exports = {
   default: {
     GITHUB_ISSUE: [
-      issues.include.labels && issueTransformLabels,
-      issues.include.comments && issueAddCommentTexts,
+      GITHUB_ISSUE.include.labels && issueTransformLabels,
+      GITHUB_ISSUE.include.comments && issueAddCommentTexts,
       issueToText,
       textRemoveCodeDelimiters,
       textTransformStacksAndWhitespace,

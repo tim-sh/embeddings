@@ -1,5 +1,5 @@
 module.exports = {
-  issues: {
+  GITHUB_ISSUE: {
     relevantLabels: /your regex/,
     include: {
       labels: false,

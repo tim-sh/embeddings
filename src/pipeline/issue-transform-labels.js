@@ -1,5 +1,5 @@
 const { proj } = require('../util/fs')
-const { issues: { relevantLabels } } = require(proj('data/config'))
+const { GITHUB_ISSUE: { relevantLabels } } = require(proj('data/config'))
 
 function issueTransformLabels(issue) {
   issue.labels = issue.labels
