@@ -2,8 +2,7 @@ module.exports = {
   GITHUB_ISSUE: {
     relevantLabels: /your regex/,
     include: {
-      labels: false,
-      comments: false
+      labels: false
     }
   },
   stacks: {

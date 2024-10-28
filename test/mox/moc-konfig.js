@@ -31,8 +31,7 @@ jest.mock('../../data/config', () => ({
   GITHUB_ISSUE: {
     relevantLabels: /me(owl)! (.*)/,
     include: {
-      labels: false,
-      comments: false
+      labels: false
     }
   },
   stacks: {
