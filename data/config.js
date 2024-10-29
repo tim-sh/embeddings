@@ -8,7 +8,7 @@ module.exports = {
   stacks: {
     maxLen: 10
   },
-  tfIdf: {
+  tfidf: {
     threshold: 0.1
   }
 }

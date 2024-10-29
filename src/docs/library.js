@@ -1,6 +1,6 @@
-const TfIdf = require('natural').TfIdf
+const { TfIdf } = require('natural')
 
-const { tfIdf: { threshold } } = require('../../data/config')
+const { tfidf: { threshold } } = require('../../data/config')
 const { runPipeline } = require('../pipeline/run-pipeline')
 const { embed } = require('../util/openai')
 const { meanVec, dot, descending } = require('../util/maths')
@@ -8,7 +8,7 @@ const { types: { GITHUB_ISSUE }, getDocType, getId } = require('./docs')
 
 class Library {
   constructor() {
-    this.termFreqCalculator = new TfIdf()
+    this.tfidfCalculator = new TfIdf()
   }
 
   async init(corpus, pipeline) {
@@ -21,7 +21,7 @@ class Library {
     for (const extDoc of extDocs) {
       const doc = await this.#toDoc(extDoc, this.docs.length)
       this.docs.push(doc)
-      this.termFreqCalculator.addDocument(doc.scoredNgrams.map(sn => sn.ngram))
+      this.tfidfCalculator.addDocument(doc.scoredNgrams.map(sn => sn.ngram))
     }
     await this.#docsUpdated()
   }
@@ -62,8 +62,8 @@ class Library {
   }
 
   async #docsUpdated() {
-    const tfIdfMax = this.#updateAllTfIdfs((sn, doc) => this.termFreqCalculator.tfidf([sn.ngram], doc.i))
-    this.#updateAllTfIdfs((sn, _) => sn.tfIdf / tfIdfMax)
+    const tfidfMax = this.#updateAllTfidfs((sn, doc) => this.tfidfCalculator.tfidf([sn.ngram], doc.i))
+    this.#updateAllTfidfs((sn, _) => sn.tfidf / tfidfMax)
 
     const embeddingsByNgrams = new Map()
 
@@ -71,7 +71,7 @@ class Library {
       let thr = threshold
       do {
         doc.relevantNgrams = doc.scoredNgrams
-            .filter(sn => sn.tfIdf >= thr)
+            .filter(sn => sn.tfidf >= thr)
             .map(sn => sn.ngram)
       } while (doc.relevantNgrams.length === 0 && (thr -= 0.01) > 0)
       if (doc.relevantNgrams.length === 0) {
@@ -106,16 +106,16 @@ class Library {
     }
   }
 
-  #updateAllTfIdfs(getTfIdf) {
-    let tfIdfMax = 0
+  #updateAllTfidfs(getTfidf) {
+    let tfidfMax = 0
     this.docs.forEach(doc =>
         doc.scoredNgrams.forEach(sn => {
-          const tfIdf = getTfIdf(sn, doc)
-          sn.tfIdf = tfIdf
-          tfIdfMax = Math.max(tfIdf, tfIdfMax)
+          const tfidf = getTfidf(sn, doc)
+          sn.tfidf = tfidf
+          tfidfMax = Math.max(tfidf, tfidfMax)
         })
     )
-    return tfIdfMax
+    return tfidfMax
   }
 }
 

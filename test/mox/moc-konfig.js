@@ -37,7 +37,7 @@ jest.mock('../../data/config', () => ({
   stacks: {
     maxLen: 3
   },
-  tfIdf: {
+  tfidf: {
     threshold: 0.1
   }
 }))

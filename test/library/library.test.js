@@ -150,11 +150,11 @@ describe('library', () => {
 
     expect(library.docs.length).toBe(12)
 
-    const tfIdfs = {}
+    const tfidfs = {}
     library.docs.forEach(doc => {
       doc.scoredNgrams.forEach(sn => {
         if (['when', 'jiffy', 'reconcile'].includes(sn.ngram)) {
-          tfIdfs[sn.ngram] = sn.tfIdf
+          tfidfs[sn.ngram] = sn.tfidf
         }
       })
       expect(doc.embedding).toHaveLength(outputLength)
@@ -165,8 +165,8 @@ describe('library', () => {
       })
     })
 
-    expect(tfIdfs['when']).toBeLessThan(tfIdfs['jiffy'])
-    expect(tfIdfs['jiffy']).toBeLessThan(tfIdfs['reconcile'])
+    expect(tfidfs['when']).toBeLessThan(tfidfs['jiffy'])
+    expect(tfidfs['jiffy']).toBeLessThan(tfidfs['reconcile'])
   })
 
   it('adds a doc', async () => {
