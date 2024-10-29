@@ -13,19 +13,15 @@ class Library {
 
   async init(corpus, pipeline) {
     this.pipeline = pipeline
-    this.docs = await Promise.all(
-        corpus
-            .map((extDoc, i) => this.#toDoc(extDoc, i))
-            .filter(Boolean)
-    )
-    this.docs.forEach(doc => this.termFreqCalculator.addDocument(doc.ngrams))
+    this.docs = await Promise.all(corpus.map((extDoc, i) => this.#toDoc(extDoc, i)))
+    this.docs.forEach(doc => this.termFreqCalculator.addDocument(doc.scoredNgrams.map(sn => sn.ngram)))
     await this.#docsUpdated()
   }
 
   async addDoc(extDoc) {
     const doc = await this.#toDoc(extDoc, this.docs.length)
     this.docs.push(doc)
-    this.termFreqCalculator.addDocument(doc.ngrams)
+    this.termFreqCalculator.addDocument(doc.scoredNgrams.map(sn => sn.ngram))
     await this.#docsUpdated()
   }
 
@@ -60,32 +56,22 @@ class Library {
       type: getDocType(extDoc),
       id: getId(extDoc),
       i,
-      ngrams: (await runPipeline(this.pipeline, extDoc))
-          .filter(Boolean)
-          .flat()
+      scoredNgrams: await runPipeline(this.pipeline, extDoc)
     }
   }
 
   async #docsUpdated() {
-    const tfIdfs = new Map()
-    this.docs.forEach(doc =>
-        doc.ngrams.forEach(ngram => tfIdfs.set(ngram, this.termFreqCalculator.tfidf([ngram], doc.i)))
-    )
-
-    const tfIdfMin = Math.min(...tfIdfs.values())
-    const tfIdfMax = Math.max(...tfIdfs.values())
-
-    // Normalize TF-IDF scores
-
-    tfIdfs.forEach((tfIdf, ngram) => tfIdfs.set(ngram, (tfIdf - tfIdfMin) / (tfIdfMax - tfIdfMin)))
+    const tfIdfMax = this.#updateAllTfIdfs((sn, doc) => this.termFreqCalculator.tfidf([sn.ngram], doc.i))
+    this.#updateAllTfIdfs((sn, _) => sn.tfIdf / tfIdfMax)
 
     const embeddingsByNgrams = new Map()
 
     for (const doc of this.docs) {
-      doc.tfIdfs = doc.ngrams.map(ngram => tfIdfs.get(ngram))
       let thr = threshold
       do {
-        doc.relevantNgrams = doc.ngrams.filter((ngram, i) => doc.tfIdfs[i] >= thr)
+        doc.relevantNgrams = doc.scoredNgrams
+            .filter(sn => sn.tfIdf >= thr)
+            .map(sn => sn.ngram)
       } while (doc.relevantNgrams.length === 0 && (thr -= 0.01) > 0)
       if (doc.relevantNgrams.length === 0) {
         throw new Error(`No relevant n-grams found for doc ${doc.id}`)
@@ -117,6 +103,18 @@ class Library {
           })).embeddings[0]
       doc.embedding = meanVec(doc.relevantNgrams.map(ngram => embeddingsByNgrams.get(ngram)))
     }
+  }
+
+  #updateAllTfIdfs(getTfIdf) {
+    let tfIdfMax = 0
+    this.docs.forEach(doc =>
+        doc.scoredNgrams.forEach(sn => {
+          const tfIdf = getTfIdf(sn, doc)
+          sn.tfIdf = tfIdf
+          tfIdfMax = Math.max(tfIdf, tfIdfMax)
+        })
+    )
+    return tfIdfMax
   }
 }
 

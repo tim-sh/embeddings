@@ -152,10 +152,9 @@ describe('library', () => {
 
     const tfIdfs = {}
     library.docs.forEach(doc => {
-      expect(doc.tfIdfs).toHaveLength(doc.ngrams.length)
-      doc.ngrams.forEach((ngram, i) => {
-        if (['when', 'jiffy', 'reconcile'].includes(ngram)) {
-          tfIdfs[ngram] = doc.tfIdfs[i]
+      doc.scoredNgrams.forEach(sn => {
+        if (['when', 'jiffy', 'reconcile'].includes(sn.ngram)) {
+          tfIdfs[sn.ngram] = sn.tfIdf
         }
       })
       expect(doc.embedding).toHaveLength(outputLength)
