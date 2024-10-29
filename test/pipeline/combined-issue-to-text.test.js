@@ -4,7 +4,6 @@ const { textRemoveCodeDelimiters } = require('../../src/pipeline/text-remove-cod
 const { textTransformPaths } = require('../../src/pipeline/text-transform-paths')
 const { textTransformStacksAndWhitespace } = require('../../src/pipeline/text-transform-stacks-and-whitespace')
 const { issueToText } = require('../../src/pipeline/issue-to-text')
-const { issueAddCommentTexts } = require('../../src/pipeline/issue-add-comment-texts')
 const { issueTransformLabels } = require('../../src/pipeline/issue-transform-labels')
 const { textTransformLowercase } = require('../../src/pipeline/text-transform-lowercase')
 
@@ -156,9 +155,7 @@ Caused by: com.example.db.jdbc.exceptions.JDBCDriverException:  DBTech JDBC: [26
                 textTransformStacksAndWhitespace(
                     textRemoveCodeDelimiters(
                         issueToText(
-                            await issueAddCommentTexts(
-                                issueTransformLabels(issue)
-                            )
+                            issueTransformLabels(issue)
                         )
                     )
                 )
@@ -200,10 +197,7 @@ at com.example.impl.jdbcclient.executequery(jdbcclient.java:211)
 caused by: com.example.foodatastoreexception: sql: select nulls first
 caused by: com.example.db.jdbc.exceptions.jdbcdriverexception:  dbtech jdbc: [260]: invalid column name: t0.my_view_my_view_id: line 1 col 382 (at pos 381)
 at com.example.db.jdbc.exceptions.sqlexceptionsapdb._newinstance(sqlexceptionsapdb.java:209)
-at com.example.db.jdbc.exceptions.sqlexceptionsapdb.newinstance(sqlexceptionsapdb.java:42)
-comment 1
-comment 2
-comment 3`
+at com.example.db.jdbc.exceptions.sqlexceptionsapdb.newinstance(sqlexceptionsapdb.java:42)`
     )
 
   })

@@ -1,7 +1,6 @@
 const { GITHUB_ISSUE } = require('../../data/config')
 
 const { issueTransformLabels } = require('../pipeline/issue-transform-labels')
-const { issueAddCommentTexts } = require('../pipeline/issue-add-comment-texts')
 const { issueToText } = require('../pipeline/issue-to-text')
 const { textRemoveCodeDelimiters } = require('../pipeline/text-remove-code-delimiters')
 const { textTransformStacksAndWhitespace } = require('../pipeline/text-transform-stacks-and-whitespace')
@@ -15,7 +14,6 @@ module.exports = {
   default: {
     GITHUB_ISSUE: [
       GITHUB_ISSUE.include.labels && issueTransformLabels,
-      GITHUB_ISSUE.include.comments && issueAddCommentTexts,
       issueToText,
       textRemoveCodeDelimiters,
       textTransformStacksAndWhitespace,
@@ -28,7 +26,6 @@ module.exports = {
   },
   functions: {
     issueTransformLabels,
-    issueAddCommentTexts,
     issueToText,
     textRemoveCodeDelimiters,
     textTransformStacksAndWhitespace,

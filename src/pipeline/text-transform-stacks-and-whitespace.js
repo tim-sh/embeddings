@@ -1,4 +1,4 @@
-const { stacks: { maxLen } } = require('../../data/config')
+const { GITHUB_ISSUE: { stacks } } = require('../../data/config')
 
 function textTransformStacksAndWhitespace(text) {
   let stackLen = 0
@@ -70,5 +70,5 @@ function tryStack(line, prev, next, stackLen, excludeFromMaxLen) {
     return [false, stackLen, excludeFromMaxLenNext]
   }
   // relevant stack frame
-  return [excludeFromMaxLen || ++stackLen <= maxLen, stackLen, excludeFromMaxLenNext]
+  return [excludeFromMaxLen || ++stackLen <= stacks.maxLen, stackLen, excludeFromMaxLenNext]
 }
