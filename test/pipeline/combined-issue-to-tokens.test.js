@@ -4,7 +4,6 @@ const { textRemoveCodeDelimiters } = require('../../src/pipeline/text-remove-cod
 const { textTransformPaths } = require('../../src/pipeline/text-transform-paths')
 const { textTransformStacksAndWhitespace } = require('../../src/pipeline/text-transform-stacks-and-whitespace')
 const { issueToText } = require('../../src/pipeline/issue-to-text')
-const { issueAddCommentTexts } = require('../../src/pipeline/issue-add-comment-texts')
 const { issueTransformLabels } = require('../../src/pipeline/issue-transform-labels')
 const { textToTokens } = require('../../src/pipeline/text-to-tokens')
 const { textTransformLowercase } = require('../../src/pipeline/text-transform-lowercase')
@@ -37,9 +36,7 @@ describe('combined-issue-to-tokens', () => {
                     textTransformStacksAndWhitespace(
                         textRemoveCodeDelimiters(
                             issueToText(
-                                await issueAddCommentTexts(
-                                    issueTransformLabels(issue)
-                                )
+                                issueTransformLabels(issue)
                             )
                         )
                     )
@@ -66,13 +63,7 @@ describe('combined-issue-to-tokens', () => {
       'what',
       'can',
       'u',
-      'help',
-      'comment',
-      '1',
-      'comment',
-      '2',
-      'comment',
-      '3'
+      'help'
     ])
 
   })

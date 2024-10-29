@@ -32,10 +32,10 @@ jest.mock('../../data/config', () => ({
     relevantLabels: /me(owl)! (.*)/,
     include: {
       labels: false
+    },
+    stacks: {
+      maxLen: 3
     }
-  },
-  stacks: {
-    maxLen: 3
   },
   tfidf: {
     threshold: 0.1
