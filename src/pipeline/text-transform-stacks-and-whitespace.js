@@ -1,5 +1,4 @@
-const { proj } = require('../util/fs')
-const { stacks: { maxLen } } = require(proj('data/config'))
+const { stacks: { maxLen } } = require('../../data/config')
 
 function textTransformStacksAndWhitespace(text) {
   let stackLen = 0

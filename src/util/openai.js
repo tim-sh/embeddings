@@ -1,8 +1,7 @@
-const { proj } = require('./fs')
 const { getToken } = require('./auth')
 const { vec, normalize } = require('./maths')
 
-const { models, credentials } = require(proj('data/.private/config.json'))
+const { models, credentials } = require('../../data/.private/config.json')
 
 async function complete(message, {
   model = 'GPT_4O',

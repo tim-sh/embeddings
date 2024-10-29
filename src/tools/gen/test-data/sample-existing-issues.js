@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { proj } = require('../../../util/fs')
+const { fromHere } = require('../../../util/fs')
 const { getComments } = require('../../../util/github')
 const { writeFileSync } = require('node:fs')
 const { hashed } = require('../../../util/format')
@@ -14,7 +14,7 @@ const relevantFields = [
 
 async function main() {
 
-  const issues = require(proj('data/.private/issues/issues.label-names.json'), 'utf8')
+  const issues = require(fromHere('../../../../data/.private/issues/issues.label-names.json'), 'utf8')
 
   const randomIssues = []
   for (let i = 0; i < 36; i++) {
@@ -29,7 +29,7 @@ async function main() {
 
   const str = JSON.stringify(randomIssues, null, 2)
       .replaceAll(/\b[di]\d{6}\b/gi, username => hashed(username))
-  writeFileSync(proj('data/.private/issues/issues.rnd.json'), str)
+  writeFileSync(fromHere('../../../../data/.private/issues/issues.rnd.json'), str)
 
 }
 
