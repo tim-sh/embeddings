@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
+const { resolve } = require('node:path')
+const assert = require('node:assert')
+
 const pipelines = require('../../pipeline')
 
 async function main() {
-  const { resolve } = require('node:path')
-  const assert = require('node:assert')
 
   const [, , docsJsonPath, nSimilarStr , queryDocIdStr, ...baseDocIds] = process.argv
   assert(docsJsonPath, 'Missing docsJsonPath')
