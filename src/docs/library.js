@@ -29,7 +29,7 @@ class Library {
     await this.#docsUpdated()
   }
 
-  getMostSimilarDocs(qDocId, n = 1, type = GITHUB_ISSUE.type) {
+  getMostSimilarDocs(qDocId, n = Number.MAX_SAFE_INTEGER, type = GITHUB_ISSUE.type) {
     const qDoc = this.docs.find(doc => doc.type === type && doc.id === qDocId)
     if (!qDoc) {
       throw new Error(`Query doc ${qDocId} not found`)
