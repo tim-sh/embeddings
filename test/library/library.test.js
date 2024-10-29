@@ -173,7 +173,7 @@ describe('library', () => {
     const library1 = new Library()
     await library1.init(corpus.slice(0, 11), pipeline.default.GITHUB_ISSUE)
 
-    await library1.addDoc(corpus[11])
+    await library1.addDocs(corpus[11])
 
     const library2 = new Library()
     await library2.init(corpus, pipeline.default.GITHUB_ISSUE)

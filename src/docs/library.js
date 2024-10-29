@@ -13,15 +13,16 @@ class Library {
 
   async init(corpus, pipeline) {
     this.pipeline = pipeline
-    this.docs = await Promise.all(corpus.map((extDoc, i) => this.#toDoc(extDoc, i)))
-    this.docs.forEach(doc => this.termFreqCalculator.addDocument(doc.scoredNgrams.map(sn => sn.ngram)))
-    await this.#docsUpdated()
+    this.docs = []
+    await this.addDocs(...corpus)
   }
 
-  async addDoc(extDoc) {
-    const doc = await this.#toDoc(extDoc, this.docs.length)
-    this.docs.push(doc)
-    this.termFreqCalculator.addDocument(doc.scoredNgrams.map(sn => sn.ngram))
+  async addDocs(...extDocs) {
+    for (const extDoc of extDocs) {
+      const doc = await this.#toDoc(extDoc, this.docs.length)
+      this.docs.push(doc)
+      this.termFreqCalculator.addDocument(doc.scoredNgrams.map(sn => sn.ngram))
+    }
     await this.#docsUpdated()
   }
 
