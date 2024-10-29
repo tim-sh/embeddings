@@ -165,8 +165,8 @@ describe('library', () => {
       })
     })
 
-    expect(tfidfs['when']).toBeLessThan(tfidfs['jiffy'])
-    expect(tfidfs['jiffy']).toBeLessThan(tfidfs['reconcile'])
+    expect(tfidfs['when'].lessThan(tfidfs['jiffy'])).toBeTruthy()
+    expect(tfidfs['jiffy'].lessThan(tfidfs['reconcile'])).toBeTruthy()
   })
 
   it('adds a doc', async () => {

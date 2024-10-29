@@ -5,6 +5,7 @@ const { runPipeline } = require('../pipeline/run-pipeline')
 const { embed } = require('../util/openai')
 const { meanVec, dot, descending } = require('../util/maths')
 const { types: { GITHUB_ISSUE }, getDocType, getId } = require('./docs')
+const Decimal = require('decimal.js')
 
 class Library {
   constructor() {
@@ -63,7 +64,7 @@ class Library {
 
   async #docsUpdated() {
     const tfidfMax = this.#updateAllTfidfs((sn, doc) => this.tfidfCalculator.tfidf([sn.ngram], doc.i))
-    this.#updateAllTfidfs((sn, _) => sn.tfidf / tfidfMax)
+    this.#updateAllTfidfs((sn, _) => new Decimal(sn.tfidf).div(tfidfMax))
 
     const embeddingsByNgrams = new Map()
 
@@ -71,7 +72,7 @@ class Library {
       let thr = threshold
       do {
         doc.relevantNgrams = doc.scoredNgrams
-            .filter(sn => sn.tfidf >= thr)
+            .filter(sn => sn.tfidf.greaterThanOrEqualTo(thr))
             .map(sn => sn.ngram)
       } while (doc.relevantNgrams.length === 0 && (thr -= 0.01) > 0)
       if (doc.relevantNgrams.length === 0) {
@@ -107,12 +108,12 @@ class Library {
   }
 
   #updateAllTfidfs(getTfidf) {
-    let tfidfMax = 0
+    let tfidfMax = new Decimal(0)
     this.docs.forEach(doc =>
         doc.scoredNgrams.forEach(sn => {
           const tfidf = getTfidf(sn, doc)
           sn.tfidf = tfidf
-          tfidfMax = Math.max(tfidf, tfidfMax)
+          tfidfMax = Decimal.max(tfidf, tfidfMax)
         })
     )
     return tfidfMax
