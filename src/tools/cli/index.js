@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const pipelines = require('../../pipeline')
+
 async function main() {
   const { resolve } = require('node:path')
   const assert = require('node:assert')
@@ -16,9 +18,9 @@ async function main() {
     docs = docs.filter(doc => doc.number === queryDocId || baseDocIds.includes(doc.number.toString()))
   }
 
-  const { Library } = require('../../library/library')
+  const { Library } = require('../../docs/library')
   const library = new Library()
-  await library.init(docs)
+  await library.init(docs, pipelines.default.GITHUB_ISSUE)
 
   const mostSimilarDocs = library.getMostSimilarDocs(queryDocId, parseInt(nSimilarStr))
       .map(sim => {

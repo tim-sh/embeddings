@@ -28,17 +28,16 @@ jest.mock('../../data/.private/config.json', () => ({
 }))
 
 jest.mock('../../data/config', () => ({
-  issues: {
+  GITHUB_ISSUE: {
     relevantLabels: /me(owl)! (.*)/,
     include: {
-      labels: false,
-      comments: false
+      labels: false
     }
   },
   stacks: {
     maxLen: 3
   },
-  tfIdf: {
+  tfidf: {
     threshold: 0.1
   }
 }))

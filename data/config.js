@@ -1,15 +1,14 @@
 module.exports = {
-  issues: {
+  GITHUB_ISSUE: {
     relevantLabels: /your regex/,
     include: {
-      labels: false,
-      comments: false
+      labels: false
     }
   },
   stacks: {
     maxLen: 10
   },
-  tfIdf: {
+  tfidf: {
     threshold: 0.1
   }
 }

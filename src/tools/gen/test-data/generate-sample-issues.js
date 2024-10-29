@@ -2,7 +2,7 @@
 
 const { complete } = require('../../../util/openai')
 const { writeFileSync } = require('node:fs')
-const { proj } = require('../../../util/fs')
+const { fromHere } = require('../../../util/fs')
 const { rndStr } = require('../../../util/format')
 
 const n = 10
@@ -57,7 +57,7 @@ for (const [ref, kind] of [['the same problem but phrased differently', 'same'],
             .issues
             .map(issue => ({ ...issue, kind }))
         allIssues.push(...issues)
-        return writeFileSync(proj(`data/samples/issues/issues.${n}.${kind}.${id}.json`), JSON.stringify(issues, null, 2), 'utf8')
+        return writeFileSync(fromHere(`../../../../data/samples/issues/issues.${n}.${kind}.${id}.json`), JSON.stringify(issues, null, 2), 'utf8')
       })
-      .then(() => writeFileSync(proj(`data/samples/issues/issues.${n}.all.${id}.json`), JSON.stringify(allIssues, null, 2), 'utf8'))
+      .then(() => writeFileSync(fromHere(`../../../../data/samples/issues/issues.${n}.all.${id}.json`), JSON.stringify(allIssues, null, 2), 'utf8'))
 }
