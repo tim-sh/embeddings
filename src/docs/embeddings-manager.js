@@ -39,12 +39,14 @@ class EmbeddingsManager {
   }
 
   aggregate(embeddings, { weights = undefined } = {}) {
-    assert (aggregationStrategy in { weightedMean: 1, maxPooling: 1 } && weights, 'Only weighted-mean aggregation strategy is supported')
     switch (aggregationStrategy) {
       case 'weightedMean':
+        assert (weights?.length === embeddings.length, 'Invalid weights length')
         return normalize(meanVec(embeddings, weights))
       case 'maxPooling':
         return normalize(maxPooling(embeddings))
+      default:
+        throw new Error('Invalid aggregation strategy')
     }
   }
 
