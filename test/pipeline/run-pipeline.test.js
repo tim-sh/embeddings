@@ -13,17 +13,6 @@ const { textTransformLowercase } = require('../../src/pipeline/text-transform-lo
 
 describe('run-pipeline', () => {
 
-  beforeAll(async () => {
-    const { default: fetchMock } = await import('fetch-mock')
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/123/comments`, [
-      { body: 'comment 1', user: { type: 'User', login: 'user1' }, author_association: 'MEMBER' },
-      { body: `I'm a tea bot`, user: { type: 'Bot' } },
-      { body: 'comment 2', user: { type: 'User' }, created_at: '2001-01-01T01:00:00Z' },
-      { body: 'comment 3', user: null },
-      { body: undefined, user: { type: 'User' } }
-    ])
-  })
-
   it('transforms issue to n-grams', async () => {
     expect(await runPipeline([
       issueTransformLabels,

@@ -7,63 +7,24 @@ describe('library', () => {
 
   let iDoc
 
-  beforeAll(async () => {
-    const { default: fetchMock } = await import('fetch-mock')
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/123/comments`, [
-      { body: 'Severe problem', user: { type: 'User', login: 'user1' }, author_association: 'MEMBER' },
-      { body: `I'm a tea bot`, user: { type: 'Bot' } },
-      { body: 'Have you turned it on', user: { type: 'User' }, created_at: '2001-01-01T01:00:00Z' }
-    ])
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/124/comments`, [
-      { body: 'This is a known problem' },
-      { body: `It's indeed related to the reconcile process` }
-    ])
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/125/comments`, [
-      { body: 'This might be caused by connection pooling issues.' }
-    ])
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/126/comments`, [
-      { body: 'Have you checked the file permissions on the mounted drive?' }
-    ])
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/127/comments`, [
-      { body: 'Memory leaks can often be caused by holding on to unused references.' }
-    ])
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/128/comments`, [
-      { body: 'It looks like the API is timing out. Consider increasing the timeout settings.' }
-    ])
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/129/comments`, [
-      { body: 'Deadlocks under high load can be tricky. Check your thread synchronization.' }
-    ])
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/130/comments`, [
-      { body: 'This sounds like a cache invalidation issue. How frequently is it being cleared?' }
-    ])
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/131/comments`, [
-      { body: 'Premature session expiration might be due to a misconfigured session timeout.' }
-    ])
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/132/comments`, [
-      { body: 'Missed tasks could be due to event loop delays or scheduling conflicts.' }
-    ])
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/133/comments`, [
-      { body: 'Rendering delay might be related to how the system handles high DPI scaling.' }
-    ])
-    fetchMock.mock(`${apiUrl}/repos/org/repo/issues/134/comments`, [
-      { body: 'Disk I/O contention could be causing these delays under high load.' }
-    ])
-    fetchMock.mock(`${tokenUrl}/oauth/token?grant_type=client_credentials&response_type=token`, { access_token: 'token' })
-    fetchMock.mock(`${deploymentUrl}/embeddings?api-version=2024-02-01`, (url, req) => {
-      iDoc++
-      const input = JSON.parse(req.body.toString()).input
-      return {
-        data: Array.from({ length: input.length }, (_, g) => {
-          const firstByte = input[g].charCodeAt(0) & 0xff // start deterministically for each input string
-          return {
-            // Simulate high similarity between first two documents
-            embedding: Array.from({ length: outputLength }, (_, i) => (iDoc < 2 && i < 5 ? 1 - i/2 : ((firstByte + i) % 100) / 100))  // values in [-1, 1)
-          }
-        }),
-        usage: { total_tokens: 100 }
-      }
+    beforeAll(async () => {
+      const { default: fetchMock } = await import('fetch-mock')
+      fetchMock.mock(`${tokenUrl}/oauth/token?grant_type=client_credentials&response_type=token`, { access_token: 'token' })
+      fetchMock.mock(`${deploymentUrl}/embeddings?api-version=2024-02-01`, (url, req) => {
+        iDoc++
+        const input = JSON.parse(req.body.toString()).input
+        return {
+          data: Array.from({ length: input.length }, (_, g) => {
+            const firstByte = input[g].charCodeAt(0) & 0xff // start deterministically for each input string
+            return {
+              // Simulate high similarity between first two documents
+              embedding: Array.from({ length: outputLength }, (_, i) => (iDoc < 2 && i < 5 ? 1 - i / 2 : ((firstByte + i) % 100) / 100))  // values in [-1, 1)
+            }
+          }),
+          usage: { total_tokens: 100 }
+        }
+      })
     })
-  })
 
   beforeEach(async () => {
     iDoc = -1
