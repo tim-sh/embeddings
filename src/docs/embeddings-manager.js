@@ -1,5 +1,9 @@
+const assert = require('node:assert')
+
+const { embedding: { aggregationStrategy } } = require('../../data/config')
 const { EmbeddingsSqliteDb } = require('../db/embeddings-sqlite')
 const { embed } = require('../util/openai')
+const { normalize, meanVec } = require('../util/maths')
 
 class EmbeddingsManager {
   constructor(dbPath) {
@@ -32,6 +36,11 @@ class EmbeddingsManager {
     }
 
     return ngrams.map(ngram => embeddingsByNgrams.get(ngram))
+  }
+
+  aggregate(embeddings, { weights = undefined } = {}) {
+    assert (aggregationStrategy === 'weightedMean' && weights, 'Only weighted-mean aggregation strategy is supported')
+    return normalize(meanVec(embeddings, weights))
   }
 
   close() {

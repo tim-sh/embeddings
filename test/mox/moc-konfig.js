@@ -37,6 +37,9 @@ jest.mock('../../data/config', () => ({
   },
   tfidf: {
     threshold: 0.1
+  },
+  embedding: {
+    aggregationStrategy: 'weightedMean'
   }
 }))
 
