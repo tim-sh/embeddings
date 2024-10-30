@@ -1,19 +1,19 @@
-const { ngrams } = require('natural').NGrams
+const { ngrams: getNgrams } = require('natural').NGrams
 
 function tokensToNgrams(tokens) {
-  return [
+  const ngramsWithDuplicates = [
     tokens      // n=1
   ].concat(
       [
         2,
         3
-      ].map(n =>
-          ngrams(tokens, n).map(tuple => tuple.join(' '))
-      )
-  ).flatMap((ngrams, i) => ngrams.map(ngram => ({
-    ngram,
-    n: i + 1
-  })))
+      ].map(n => getNgrams(tokens, n).map(tuple => tuple.join(' ')))
+  )
+  return Array.from(new Set(ngramsWithDuplicates))
+      .flatMap((ngrams, i) => ngrams.map(ngram => ({
+        ngram,
+        n: i + 1
+      })))
 }
 
 module.exports = {
