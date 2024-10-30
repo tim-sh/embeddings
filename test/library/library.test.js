@@ -132,6 +132,8 @@ describe('library', () => {
 
       expect(tfidfs['when'].lessThan(tfidfs['jiffy'])).toBeTruthy()
       expect(tfidfs['jiffy'].lessThan(tfidfs['reconcile'])).toBeTruthy()
+
+      library.close()
     })
 
     it('adds a doc', async () => {
@@ -148,6 +150,9 @@ describe('library', () => {
       for (let i = 0; i < library2.docs.length; i++) {
         expect(library1.docs[i].ngrams).toEqual(library2.docs[i].ngrams)
       }
+
+      library1.close()
+      library2.close()
     })
 
     it('gets most similar doc', async () => {
@@ -163,6 +168,8 @@ describe('library', () => {
       })
 
       expect(similarDocs[0].id).toBe(124)
+
+      library.close()
     })
   })
 
@@ -193,6 +200,8 @@ describe('library', () => {
       })
 
       expect(similarDocs[0].id).toBe(124)
+
+      library.close()
     })
 
   })
