@@ -1,6 +1,10 @@
 const Decimal = require('decimal.js')
 const { vec, arr, mean, meanVec, dot, minus, exp, length, normalize } = require('../../src/util/maths')
 
+function dec(v) {
+  return new Decimal(v)
+}
+
 describe('maths', () => {
   describe('mean', () => {
     it('calculates the mean of an array', () => {
@@ -11,6 +15,9 @@ describe('maths', () => {
   describe('meanVec', () => {
     it('calculates the mean of an array of arrays', () => {
       expect(arr(meanVec([vec([1, 2]), vec([3, 4]), vec([5, 6])]))).toEqual([3, 4])
+    })
+    it('calculates the weighted mean of an array of arrays', () => {
+      expect(meanVec([vec([1, 3]), vec([3, 4]), vec([5, 1])], vec([.1, .5, 1]))).toEqual([dec(2.2), dec(1.1)])
     })
   })
 

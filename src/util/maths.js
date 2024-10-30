@@ -30,14 +30,17 @@ function mean(arr) {
 /**
  * Calculate the mean of an array of vectors.
  * @param arrOfVec {Decimal[][]} - Array of vectors
+ * @param weights {Decimal[]} - Weights for the vectors
  * @return {Decimal[]} - Mean of the array of vectors
  */
-function meanVec(arrOfVec) {
+function meanVec(arrOfVec, weights = undefined) {
   if (!arrOfVec.length) {
     return []
   }
   const dim = arrOfVec[0].length
-  return Array.from({ length: dim }, (_, i) => mean(arrOfVec.map(vec => vec[i])))
+  return weights
+      ? Array.from({ length: dim }, (_, i) => mean(arrOfVec.map((vec, j) => vec[i].mul(weights[j]))))
+      : Array.from({ length: dim }, (_, i) => mean(arrOfVec.map(vec => vec[i])))
 }
 
 /**

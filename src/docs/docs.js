@@ -8,7 +8,7 @@ const types = {
 }
 
 function getDocType(doc) {
-  assert('number' in doc && doc.title && doc.labels, 'doc must be a GitHub issue')
+  assert(doc && 'number' in doc && doc.title && doc.labels, 'doc must be a GitHub issue')
   return types.GITHUB_ISSUE.type
 }
 

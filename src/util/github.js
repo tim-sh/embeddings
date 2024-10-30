@@ -1,4 +1,4 @@
-const { github: { apiUrl, token, org, repo } } = require('../../data/.private/config.json')
+const { github: { apiUrl, token, org, repo } } = require('../../data/.private/config')
 
 async function getComments(issue, fields = ['body', 'user.type']) {
   const { number } = issue
