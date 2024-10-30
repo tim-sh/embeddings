@@ -1,5 +1,5 @@
 const Decimal = require('decimal.js')
-const { vec, arr, mean, meanVec, dot, minus, exp, length, normalize } = require('../../src/util/maths')
+const { vec, arr, mean, meanVec, maxPooling, dot, minus, length, normalize } = require('../../src/util/maths')
 
 function dec(v) {
   return new Decimal(v)
@@ -21,6 +21,12 @@ describe('maths', () => {
     })
   })
 
+  describe('maxPooling', () => {
+    it('calculates the max pooling of an array of arrays', () => {
+      expect(maxPooling([vec([1, 2]), vec([3, 6]), vec([5, 4])])).toEqual([dec(5), dec(6)])
+    })
+  })
+
   describe('dot', () => {
     it('calculates the dot product of two arrays', () => {
       expect(dot(vec([1, 2, 3]), vec([4, 5, 6])).toNumber()).toBe(32)
@@ -30,12 +36,6 @@ describe('maths', () => {
   describe('minus', () => {
     it('subtracts two arrays', () => {
       expect(arr(minus(vec([1, 2, 3]), vec([4, 5, 6])))).toEqual([-3, -3, -3])
-    })
-  })
-
-  describe('exp', () => {
-    it('calculates the exponent of a number', () => {
-      expect(exp(new Decimal(2), 3).toNumber()).toBe(8)
     })
   })
 

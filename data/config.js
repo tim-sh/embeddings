@@ -10,5 +10,8 @@ module.exports = {
   },
   tfidf: {
     threshold: 0.1
+  },
+  embedding: {
+    aggregationStrategy: 'maxPooling'
   }
 }

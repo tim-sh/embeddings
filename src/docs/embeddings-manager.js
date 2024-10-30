@@ -1,5 +1,9 @@
+const assert = require('node:assert')
+
+const { embedding: { aggregationStrategy } } = require('../../data/config')
 const { EmbeddingsSqliteDb } = require('../db/embeddings-sqlite')
 const { embed } = require('../util/openai')
+const { normalize, meanVec, maxPooling } = require('../util/maths')
 
 class EmbeddingsManager {
   constructor(dbPath) {
@@ -32,6 +36,18 @@ class EmbeddingsManager {
     }
 
     return ngrams.map(ngram => embeddingsByNgrams.get(ngram))
+  }
+
+  aggregate(embeddings, { weights = undefined } = {}) {
+    switch (aggregationStrategy) {
+      case 'weightedMean':
+        assert (weights?.length === embeddings.length, 'Invalid weights length')
+        return normalize(meanVec(embeddings, weights))
+      case 'maxPooling':
+        return normalize(maxPooling(embeddings))
+      default:
+        throw new Error('Invalid aggregation strategy')
+    }
   }
 
   close() {

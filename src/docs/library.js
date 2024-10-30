@@ -61,7 +61,7 @@ class Library {
 
     for (const doc of this.docs) {
       const embeddings = await this.embeddingsManager.getEmbeddings(doc.scoredNgrams.map(sn => sn.ngram))
-      doc.embedding = normalize(meanVec(embeddings, doc.scoredNgrams.map(sn => sn.tfidf)))
+      doc.embedding = this.embeddingsManager.aggregate(embeddings, { weights: doc.scoredNgrams.map(sn => sn.tfidf) })
     }
   }
 
