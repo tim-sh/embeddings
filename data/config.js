@@ -12,6 +12,6 @@ module.exports = {
     threshold: 0.1
   },
   embedding: {
-    aggregationStrategy: 'weightedMean'
+    aggregationStrategy: 'maxPooling'
   }
 }

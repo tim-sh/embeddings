@@ -3,7 +3,7 @@ const assert = require('node:assert')
 const { embedding: { aggregationStrategy } } = require('../../data/config')
 const { EmbeddingsSqliteDb } = require('../db/embeddings-sqlite')
 const { embed } = require('../util/openai')
-const { normalize, meanVec } = require('../util/maths')
+const { normalize, meanVec, maxPooling } = require('../util/maths')
 
 class EmbeddingsManager {
   constructor(dbPath) {
@@ -39,8 +39,13 @@ class EmbeddingsManager {
   }
 
   aggregate(embeddings, { weights = undefined } = {}) {
-    assert (aggregationStrategy === 'weightedMean' && weights, 'Only weighted-mean aggregation strategy is supported')
-    return normalize(meanVec(embeddings, weights))
+    assert (aggregationStrategy in { weightedMean: 1, maxPooling: 1 } && weights, 'Only weighted-mean aggregation strategy is supported')
+    switch (aggregationStrategy) {
+      case 'weightedMean':
+        return normalize(meanVec(embeddings, weights))
+      case 'maxPooling':
+        return normalize(maxPooling(embeddings))
+    }
   }
 
   close() {

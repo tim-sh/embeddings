@@ -44,6 +44,19 @@ function meanVec(arrOfVec, weights = undefined) {
 }
 
 /**
+ * Perform max pooling on an array of vectors.
+ * @param arrOfVec {Decimal[][]} - Array of vectors
+ * @return {Decimal[]|*[]} - Result of max pooling
+ */
+function maxPooling(arrOfVec) {
+  if (!arrOfVec.length) {
+    return []
+  }
+  const dim = arrOfVec[0].length
+  return Array.from({ length: dim }, (_, i) => Decimal.max(...arrOfVec.map(vec => vec[i])))
+}
+
+/**
  * Calculate the dot product of two vectors.
  * @param vec {Decimal[]} - First vector
  * @param wec {Decimal[]} - Second vector
@@ -64,26 +77,12 @@ function minus(vec, wec) {
 }
 
 /**
- * Calculate the exponent of a number.
- * @param a {Decimal} - Number
- * @param exp {number} - Exponent (integer)
- * @return {Decimal} - Result of raising the number to the exponent
- */
-function exp(a, exp) {
-  let result = a
-  for (let i = 1; i < exp; i++) {
-    result = result.mul(a)
-  }
-  return result
-}
-
-/**
  * Calculate the length (magnitude, norm) of a vector.
  * @param vec {Decimal[]} - Vector
  * @return {Decimal} - Length of the vector
  */
 function length(vec) {
-  return vec.reduce((sum, e) => sum.add(exp(e, 2)), new Decimal(0)).sqrt()
+  return vec.reduce((sum, e) => sum.add(e.pow(2)), new Decimal(0)).sqrt()
 }
 
 /**
@@ -121,9 +120,9 @@ module.exports = {
   arr,
   mean,
   meanVec,
+  maxPooling,
   dot,
   minus,
-  exp,
   length,
   normalize,
   ascending,
