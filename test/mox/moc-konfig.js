@@ -1,11 +1,9 @@
-const apiUrl = 'https://api.juhpuewqahtjLAKUZTE.com'
 const tokenUrl = 'https://token.sjfirwKJHRhjhj.com'
 const deploymentUrl = 'https://dep.sjfirwKJHRhjhj.com'
 const outputLength = 10
 
-jest.mock('../../data/.private/config.json', () => ({
+jest.mock('../../data/.private/config', () => ({
   github: {
-    apiUrl,
     token: 'token',
     org: 'org',
     repo: 'repo'
@@ -42,9 +40,14 @@ jest.mock('../../data/config', () => ({
   }
 }))
 
+function unmock() {
+  jest.unmock('../../data/.private/config')
+  jest.unmock('../../data/config')
+}
+
 module.exports = {
-  apiUrl,
   tokenUrl,
   deploymentUrl,
-  outputLength
+  outputLength,
+  unmock
 }

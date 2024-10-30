@@ -1,10 +1,13 @@
-#!/usr/bin/env node
+#!/usr/bin/env -S node --experimental-sqlite --experimental-vm-modules
+
+const { resolve } = require('node:path')
+const assert = require('node:assert')
 
 const pipelines = require('../../pipeline')
+const { EmbeddingsManager } = require('../../docs/embeddings-manager')
+const { fromHere } = require('../../util/fs')
 
 async function main() {
-  const { resolve } = require('node:path')
-  const assert = require('node:assert')
 
   const [, , docsJsonPath, nSimilarStr , queryDocIdStr, ...baseDocIds] = process.argv
   assert(docsJsonPath, 'Missing docsJsonPath')
@@ -20,7 +23,7 @@ async function main() {
 
   const { Library } = require('../../docs/library')
   const library = new Library()
-  await library.init(docs, pipelines.default.GITHUB_ISSUE)
+  await library.init(docs, pipelines.default.GITHUB_ISSUE, new EmbeddingsManager(fromHere('../../../data/temp/cli.db')))
 
   const mostSimilarDocs = library.getMostSimilarDocs(queryDocId, parseInt(nSimilarStr))
       .map(sim => {
@@ -28,6 +31,8 @@ async function main() {
         return { ...sim, kind }
       })
   console.dir(mostSimilarDocs, { depth: null })
+
+  library.close()
 }
 
 (async () => {

@@ -102,8 +102,6 @@ The following measures are taken to potentially improve precision. Numbers are o
 
 ## Known Issues
 
-- Tokens sent for embedding are not deduplicated. (BLI)
-- Embedding sometimes fails because of the input size limit. (BLI)
 - Rate limiting is not handled. (BLI)
 - Settings are currently local to this repo.
 - GitHub org is currently required.
@@ -111,5 +109,4 @@ The following measures are taken to potentially improve precision. Numbers are o
 - Settings are missing to control:
   - the parameters of the pipeline functions (BLI)
 - Cost calculation is missing. (BLI)
-- The code is currently in-memory only. Embeddings are re-computed on every run. (BLI)
-- It uses CJS modules.
+- Implemented in CJS.
